@@ -221,6 +221,12 @@
     .ev-sum-k { color: #5a7c4a; font-weight: 600; flex-shrink: 0; }
     .ev-sum-v { font-weight: 600; color: #2d2d2d; text-align: left; }
 
+    input[type="date"].ev-input {
+      cursor: pointer;
+    }
+    input[type="date"].ev-input::-webkit-calendar-picker-indicator {
+      cursor: pointer; opacity: 0.6; filter: invert(30%) sepia(50%) saturate(500%) hue-rotate(80deg);
+    }
     .ev-restart {
       display: block; margin: 6px auto 12px;
       padding: 8px 22px; font-size: 12px;
@@ -400,26 +406,86 @@
   }
 
   function submitLead() {
-    const payload = {
-      name: state.name || '',
-      company: state.company || '',
-      phone: state.phone || '',
-      email: state.email || '',
-      eventCategory: state.eventCategory || '',
-      eventType: state.eventType || '',
-      date: state.date || '',
-      hours: state.hours || '',
-      size: state.size || '',
-      catering: state.catering || '',
-      source: 'evens-chatbot-v2'
-    };
-    // ── להחליף ב-webhook שלך ──
-    // fetch('https://hook.eu1.make.com/YOUR_HOOK_ID', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(payload)
-    // }).catch(err => console.log('Webhook error:', err));
-    console.log('EVENS Lead:', payload);
+    const s = state;
+    const body = new URLSearchParams({
+      'form-name': 'evens-lead',
+      'name':          s.name || '',
+      'company':       s.company || '',
+      'phone':         s.phone || '',
+      'email':         s.email || '',
+      'eventCategory': s.eventCategory || '',
+      'eventType':     s.eventType || '',
+      'date':          s.date || '',
+      'hours':         s.hours || '',
+      'size':          s.size || '',
+      'catering':      s.catering || '',
+    });
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    })
+    .then(() => console.log('EVENS Lead sent ✅'))
+    .catch(err => console.error('Netlify form error:', err));
+  }
+
+  function addDatePicker(onSub) {
+    const r = document.createElement('div');
+    r.className = 'ev-input-row';
+    r.style.flexDirection = 'column'; r.style.gap = '8px';
+    const inp = document.createElement('input');
+    inp.className = 'ev-input'; inp.type = 'date';
+    inp.style.width = '100%';
+    // Set min date to today
+    const today = new Date().toISOString().split('T')[0];
+    inp.min = today;
+    const row2 = document.createElement('div');
+    row2.style.cssText = 'display:flex;gap:8px;width:100%';
+    const skipBtn = document.createElement('button');
+    skipBtn.className = 'ev-send'; skipBtn.textContent = 'גמיש / לא יודע';
+    skipBtn.style.cssText = 'background:#8b6914;flex:1;font-size:13px';
+    const btn = document.createElement('button');
+    btn.className = 'ev-send'; btn.textContent = 'שלח'; btn.style.flex = '1';
+    function sub(val) {
+      inp.disabled = true; btn.disabled = true; skipBtn.disabled = true;
+      r.style.opacity = '.5';
+      onSub(val);
+    }
+    btn.onclick = () => { const v = inp.value; if (!v) return; sub(formatDate(v)); };
+    skipBtn.onclick = () => sub('גמיש / לא יודע עדיין');
+    inp.onkeydown = e => { if (e.key === 'Enter' && inp.value) sub(formatDate(inp.value)); };
+    row2.appendChild(skipBtn); row2.appendChild(btn);
+    r.appendChild(inp); r.appendChild(row2);
+    MSG.appendChild(r); MSG.scrollTop = MSG.scrollHeight;
+    setTimeout(() => inp.focus(), 100);
+  }
+
+  function formatDate(d) {
+    if (!d) return '';
+    const [y, m, day] = d.split('-');
+    const months = ['','ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    return `${parseInt(day)} ב${months[parseInt(m)]} ${y}`;
+  }
+
+  function addOptsConditional(onSel) {
+    const cat = state.eventCategory || '';
+    let opts;
+    if (cat === 'אירוע עסקי') {
+      opts = ['כנס / הרצאה', 'ישיבת הנהלה / מפגש מנהלים', 'יום גיבוש', 'סדנה מקצועית', 'אחר'];
+    } else if (cat === 'אירוע פרטי') {
+      opts = ['בר / בת מצווה', 'יום הולדת', 'חתונה / אירוסין', 'מסיבה / מפגש משפחתי', 'אחר'];
+    } else {
+      // "אחר" - free text
+      addInput('ספר/י לנו במה מדובר...', v => {
+        addUser(v);
+        onSel(v);
+      });
+      return;
+    }
+    addOpts(opts, c => {
+      addUser(c);
+      onSel(c);
+    });
   }
 
   // ── FLOW ──
@@ -438,45 +504,37 @@
       isInput: true, ph: 'שם חברה / ארגון',
       run: (v, n) => { state.company = v; n(); }
     },
-    // 2 → שלב 3: סוג האירוע — עסקי / משפחתי
+    // 2 → שלב 3: סוג האירוע — עסקי / פרטי / אחר
     {
       step: 3,
       bot: () => `מעולה! 😊\n\nמה סוג האירוע שאת/ה מתכנן/ת?`,
-      opts: ['אירוע עסקי / כנס / הרצאה / ישיבה / גיבוש', 'אירוע משפחתי (בר/בת מצווה, יום הולדת, חתונה)', 'סדנה קבוצתית', 'רק רוצה לשמוע עוד 😊'],
+      opts: ['אירוע עסקי', 'אירוע פרטי', 'אחר'],
       run: (c, n) => { state.eventCategory = c; n(); }
     },
-    // 3 → שלב 4: פירוט סוג האירוע
+    // 3 → שלב 4א: פירוט עסקי
     {
       step: 4,
       bot: () => {
         const cat = state.eventCategory || '';
-        if (cat.includes('עסקי')) return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ואירועים עסקיים ✨\n\nאיזה סוג אירוע עסקי מדובר?`;
-        if (cat.includes('משפחתי')) return `כמה מרגש! 🎉 אנחנו אוהבים לארח אירועים משפחתיים מיוחדים באווירה חמה ואינטימית.\n\nמה האירוע הספציפי?`;
-        if (cat.includes('סדנה')) return `יופי! יש לנו מגוון סדנאות — בישול, צמחי תבלין, יצירה ועוד. אפשר גם להתאים סדנה ייחודית 🌿\n\nמה סוג הסדנה שמעניין אותך?`;
+        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ואירועים עסקיים ✨\n\nאיזה סוג אירוע עסקי מדובר?`;
+        if (cat === 'אירוע פרטי') return `כמה מרגש! 🎉 אנחנו אוהבים לארח אירועים פרטיים באווירה חמה ואינטימית.\n\nמה האירוע הספציפי?`;
         return `בכיף! ספר/י לי קצת ונמצא יחד מה מתאים 😊\n\nעל מה היית רוצה לשמוע?`;
       },
-      isInput: true, ph: 'לדוגמה: ישיבת הנהלה / בת מצווה / ערב גיבוש...',
-      run: (v, n) => { state.eventType = v; n(); }
+      isOptsConditional: true,
+      run: (c, n) => { state.eventType = c; n(); }
     },
     // 4 → שלב 5: כמות אורחים
     {
       step: 5,
       bot: () => `מעולה! 💫\n\nלכמה אורחים בערך?`,
-      opts: ['עד 20', '20–50', '50–80', '80–140', '140+'],
+      opts: ['עד 20', '20–50', '50–80', '80–120'],
       run: (c, n) => { state.size = c; n(); }
     },
-    // 5 → שלב 6: תאריך
+    // 5 → שלב 6: תאריך עם date picker
     {
       step: 6,
-      bot: () => {
-        const size = state.size || '';
-        let note = '';
-        if (size === '80–140' || size === '140+') {
-          note = `\n\n💡 שרק תדע/י — בקיץ עם הגינה יש לנו קיבולת של עד כ-140 אורחים. בחורף בפנים עד כ-80. נבדוק יחד!`;
-        }
-        return `${fn()}, מצוין!${note}\n\nיש תאריך מועדף בראש?`;
-      },
-      isInput: true, ph: 'לדוגמה: 15.8.2025 / יולי 2025 / גמיש',
+      bot: () => `${fn()}, מצוין! 💫\n\nיש תאריך מועדף בראש?`,
+      isDatePicker: true,
       run: (v, n) => { state.date = v; n(); }
     },
     // 6 → שלב 7: שעות האירוע
@@ -549,6 +607,19 @@
       if (s.isMulti) {
         addMultiOpts(s.opts, c => {
           addUser(c);
+          s.run(c, () => setTimeout(() => runStep(idx + 1), 350));
+        });
+        return;
+      }
+      if (s.isDatePicker) {
+        addDatePicker(v => {
+          addUser(v);
+          s.run(v, () => setTimeout(() => runStep(idx + 1), 350));
+        });
+        return;
+      }
+      if (s.isOptsConditional) {
+        addOptsConditional(c => {
           s.run(c, () => setTimeout(() => runStep(idx + 1), 350));
         });
         return;
