@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Even's – טופס הצעת מחיר</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sage: #5C7A5C;
+  --sage-light: #8BA88B;
+  --sage-dark: #3D5C3D;
+  --sage-pale: #EBF0EB;
+  --sage-mid: #D4E0D4;
+  --warm: #8B6914;
+  --warm-light: #C49A2A;
+  --warm-pale: #F5EDD4;
+  --warm-mid: #E8D4A0;
+  --cream: #FAF7F0;
+  --cream-dark: #F2EDE2;
+  --brown: #3A2E1E;
+  --brown-mid: #6B5740;
+  --text: #2C2218;
+  --muted: #7A6A58;
+  --border: #D8CEB8;
+  --border-light: #EAE3D0;
+  --white: #FFFFFF;
+  --r: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ─── TOP HEADER ─── */
+.top-header {
+  background: var(--sage-dark);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  height: 64px;
+}
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.logo-circle {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.5px;
+  background: rgba(255,255,255,0.1);
+}
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  letter-spacing: 0.5px;
+}
+.logo-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 1.5px;
+  font-weight: 300;
+  margin-top: 1px;
+}
+.header-badge {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 100px;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+/* ─── TABS ─── */
+.tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  padding: 0 36px;
+  gap: 0;
+}
+.tab {
+  padding: 14px 22px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.tab.active {
+  color: var(--sage-dark);
+  border-bottom-color: var(--sage);
+}
+.tab:hover:not(.active) { color: var(--text); }
+.tab-icon { font-size: 15px; }
+
+/* ─── MAIN LAYOUT ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 0;
+  min-height: calc(100vh - 113px);
+}
+
+/* ─── LEFT PANEL (FORM) ─── */
+.form-panel {
+  padding: 28px 32px;
+  overflow-y: auto;
+  border-left: 1px solid var(--border-light);
+}
+
+.section {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+.section-icon {
+  width: 30px; height: 30px;
+  background: var(--sage-pale);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sage-dark);
+  letter-spacing: 0.3px;
+}
+.section-hint {
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: auto;
+  font-weight: 400;
+}
+
+/* LEAD SELECTOR */
+.lead-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.lead-select-wrap {
+  flex: 1;
+  position: relative;
+}
+.lead-select-wrap select {
+  width: 100%;
+  padding: 10px 36px 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--cream);
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.lead-select-wrap select:focus { outline: none; border-color: var(--sage); }
+.lead-select-wrap::after {
+  content: '▾';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  font-size: 12px;
+}
+.btn-load {
+  background: var(--sage);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-load:hover { background: var(--sage-dark); }
+.fill-status {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--sage-dark);
+  font-weight: 500;
+  display: none;
+}
+.fill-status.show { display: flex; align-items: center; gap: 5px; }
+
+/* FORM GRID */
+.fgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.fgrid.one { grid-template-columns: 1fr; }
+.fgrid.three { grid-template-columns: 1fr 1fr 1fr; }
+.span2 { grid-column: span 2; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+label.flabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.4px;
+  display: flex; align-items: center; gap: 4px;
+}
+.req { color: #B05050; }
+
+.finput {
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--cream);
+  transition: all 0.18s;
+  width: 100%;
+  appearance: none;
+}
+.finput:focus {
+  outline: none;
+  border-color: var(--sage);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(92,122,92,0.1);
+}
+.finput.auto {
+  background: rgba(92,122,92,0.06);
+  border-color: var(--sage-light);
+  color: var(--sage-dark);
+}
+select.finput { cursor: pointer; }
+textarea.finput {
+  resize: vertical;
+  min-height: 76px;
+  line-height: 1.5;
+}
+
+/* CHECKBOXES */
+.checks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.check-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; cursor: pointer;
+  padding: 7px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+  background: var(--cream);
+  transition: all 0.15s;
+}
+.check-item:hover { border-color: var(--sage-light); background: var(--sage-pale); }
+.check-item input { accent-color: var(--sage); width: 14px; height: 14px; }
+
+/* ─── PRICE TABLE ─── */
+.price-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.price-tbl thead tr { background: var(--sage-dark); color: white; }
+.price-tbl th {
+  padding: 9px 12px;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  text-align: right;
+}
+.price-tbl td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+}
+.price-tbl tr:nth-child(even) td { background: var(--cream); }
+.price-tbl tr:last-child td { border-bottom: none; }
+.amt { font-weight: 600; color: var(--sage-dark); direction: ltr; }
+.empty-row td { color: var(--muted); text-align: center; padding: 20px; font-size: 12px; }
+
+.total-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--sage-dark);
+  color: white;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-top: 14px;
+}
+.total-lbl { font-size: 12px; color: rgba(255,255,255,0.7); }
+.total-vat { font-size: 10px; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.total-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--warm-light);
+}
+
+/* ─── ACTION BAR ─── */
+.action-bar {
+  display: flex;
+  gap: 10px;
+  padding: 16px 0 0;
+}
+.btn-primary {
+  flex: 1;
+  background: var(--sage-dark);
+  color: white;
+  border: none;
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: #2B4A2B; }
+.btn-outline {
+  background: white;
+  color: var(--brown-mid);
+  border: 1px solid var(--border);
+  padding: 13px 18px;
+  border-radius: 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-outline:hover { border-color: var(--sage); color: var(--sage-dark); }
+
+/* ─── RIGHT PANEL (PREVIEW) ─── */
+.preview-panel {
+  background: var(--cream-dark);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.preview-header {
+  padding: 16px 20px;
+  background: white;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.preview-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.preview-actions { display: flex; gap: 8px; }
+.pbtn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--muted);
+  transition: all 0.15s;
+}
+.pbtn:hover { border-color: var(--sage); color: var(--sage-dark); }
+.pbtn.send {
+  background: var(--sage);
+  color: white;
+  border-color: var(--sage);
+}
+.pbtn.send:hover { background: var(--sage-dark); }
+
+.preview-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 16px;
+}
+
+/* ─── EMAIL PREVIEW ─── */
+.email-shell {
+  background: white;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+.email-meta {
+  background: var(--cream);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 12px;
+}
+.email-meta-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+  align-items: flex-start;
+}
+.email-meta-row:last-child { margin-bottom: 0; }
+.email-lbl { color: var(--muted); font-weight: 600; min-width: 38px; }
+.email-val { color: var(--text); }
+.email-body { padding: 0; }
+
+/* Quote document inside email */
+.quote-doc {
+  font-family: 'Heebo', sans-serif;
+  color: var(--text);
+  font-size: 13px;
+}
+.qdoc-header {
+  background: var(--sage-dark);
+  padding: 24px 28px 20px;
+  color: white;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.qdoc-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.qdoc-tagline {
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 3px;
+  letter-spacing: 1.5px;
+}
+.qdoc-meta-right {
+  text-align: left;
+  font-size: 11px;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.8;
+}
+.qdoc-meta-right strong { color: var(--warm-light); }
+
+.qdoc-body { padding: 20px 24px; }
+
+.qdoc-greeting {
+  font-size: 14px;
+  margin-bottom: 14px;
+  line-height: 1.7;
+  color: var(--brown);
+}
+.qdoc-greeting strong { color: var(--sage-dark); }
+
+.qdoc-section {
+  margin-bottom: 16px;
+}
+.qdoc-section-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: var(--sage);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--sage-pale);
+}
+.qdoc-row {
+  display: flex;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+.qdoc-row:last-child { border-bottom: none; }
+.qdoc-key { color: var(--muted); min-width: 120px; }
+.qdoc-val { color: var(--text); font-weight: 500; }
+
+.qdoc-price-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.qdoc-price-table th {
+  background: var(--sage-pale);
+  color: var(--sage-dark);
+  padding: 7px 10px;
+  text-align: right;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+}
+.qdoc-price-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text);
+}
+.qdoc-price-table tr:last-child td { border-bottom: none; }
+.qdoc-price-table .pamount { font-weight: 600; color: var(--sage-dark); direction: ltr; }
+
+.qdoc-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--sage-pale);
+  border: 1px solid var(--sage-mid);
+  border-radius: 7px;
+  padding: 10px 14px;
+  margin-top: 10px;
+}
+.qdoc-total-label { font-size: 12px; font-weight: 600; color: var(--sage-dark); }
+.qdoc-total-vat { font-size: 10px; color: var(--muted); }
+.qdoc-total-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--sage-dark);
+}
+
+.qdoc-terms {
+  background: var(--warm-pale);
+  border: 1px solid var(--warm-mid);
+  border-radius: 7px;
+  padding: 12px 14px;
+  font-size: 11px;
+  color: var(--brown-mid);
+  line-height: 1.7;
+}
+.qdoc-terms strong { color: var(--warm); }
+
+.qdoc-notes {
+  background: var(--cream);
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.qdoc-footer {
+  background: var(--sage-dark);
+  padding: 16px 24px;
+  color: rgba(255,255,255,0.7);
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.qdoc-footer a { color: var(--warm-light); text-decoration: none; }
+.qdoc-footer-logo {
+  font-family: 'Playfair Display', serif;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--sage-dark);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+  transition: transform 0.35s cubic-bezier(0.175,0.885,0.32,1.275);
+  z-index: 9999;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .preview-panel { display: none; }
+}
+@media (max-width: 600px) {
+  .fgrid { grid-template-columns: 1fr; }
+  .span2 { grid-column: span 1; }
+  .form-panel { padding: 16px; }
+  .top-header { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER -->
+<div class="top-header">
+  <div class="logo-area">
+    <div class="logo-circle">E's</div>
+    <div>
+      <div class="logo-text">Even's</div>
+      <div class="logo-sub">אירוח • תרבות • תיבול</div>
+    </div>
+  </div>
+  <div class="header-badge">מערכת הצעות מחיר</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active"><span class="tab-icon">📋</span> מילוי הצעה</div>
+  <div class="tab"><span class="tab-icon">📁</span> הצעות קודמות</div>
+  <div class="tab"><span class="tab-icon">⚙️</span> הגדרות</div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- ══════════════ FORM PANEL ══════════════ -->
+  <div class="form-panel">
+
+    <!-- LEAD -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">🔗</div>
+        <div class="section-title">בחירת ליד</div>
+        <div class="section-hint">מלא אוטומטית מהמערכת</div>
+      </div>
+      <div class="lead-row">
+        <div class="lead-select-wrap">
+          <select id="leadSel">
+            <option value="">— בחר ליד ממסד הנתונים —</option>
+          </select>
+        </div>
+        <button class="btn-load" onclick="fillFromLead()">⚡ מלא</button>
+      </div>
+      <div class="fill-status" id="fillStatus">✅ <span id="fillName"></span></div>
+    </div>
+
+    <!-- CLIENT -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">👤</div>
+        <div class="section-title">פרטי לקוח</div>
+      </div>
+      <div class="fgrid">
+        <div class="field">
+          <label class="flabel">שם מלא <span class="req">*</span></label>
+          <input class="finput" id="clientName" type="text" placeholder="ישראל ישראלי" oninput="previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">שם חברה / ארגון <span class="req">*</span></label>
+          <input class="finput" id="companyName" type="text" placeholder="חברה בע״מ" oninput="previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">טלפון <span class="req">*</span></label>
+          <input class="finput" id="phone" type="tel" placeholder="05X-XXXXXXX" oninput="previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">מייל <span class="req">*</span></label>
+          <input class="finput" id="email" type="email" placeholder="name@company.com" oninput="previewUpdate()">
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENT -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">🗓️</div>
+        <div class="section-title">פרטי האירוע</div>
+      </div>
+      <div class="fgrid">
+        <div class="field">
+          <label class="flabel">תאריך <span class="req">*</span></label>
+          <input class="finput" id="eventDate" type="date" oninput="previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">סוג אירוע <span class="req">*</span></label>
+          <select class="finput" id="eventType" onchange="previewUpdate()">
+            <option value="">— בחר —</option>
+            <option>כנס עסקי</option>
+            <option>סדנת עבודה</option>
+            <option>ימי עיון</option>
+            <option>הרצאה</option>
+            <option>ישיבת הנהלה</option>
+            <option>ערב גיבוש צוות</option>
+            <option>אירוע חברה</option>
+            <option>השקת מוצר</option>
+            <option>אחר</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">שעת התחלה</label>
+          <input class="finput" id="startTime" type="time" value="09:00" oninput="previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">שעת סיום</label>
+          <input class="finput" id="endTime" type="time" value="17:00" oninput="previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">מספר אורחים <span class="req">*</span></label>
+          <input class="finput" id="guests" type="number" min="1" placeholder="20" oninput="calcPrice(); previewUpdate()">
+        </div>
+        <div class="field">
+          <label class="flabel">אולם מבוקש</label>
+          <select class="finput" id="hall" onchange="previewUpdate()">
+            <option value="">— לפי מספר אורחים —</option>
+            <option>אולם פנינה (עד 80 אורחים)</option>
+            <option>אולם טורקיז (עד 20 אורחים)</option>
+            <option>חדר ישיבות (עד 12 אורחים)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENU -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">🍽️</div>
+        <div class="section-title">תפריט ואירוח</div>
+      </div>
+      <div class="fgrid one">
+        <div class="field">
+          <label class="flabel">סוג תפריט <span class="req">*</span></label>
+          <select class="finput" id="menu" onchange="calcPrice(); previewUpdate()">
+            <option value="">— בחר תפריט —</option>
+            <option value="light_morning">ארוחת בוקר קלה + צהריים</option>
+            <option value="full_morning">ארוחת בוקר מלאה + צהריים</option>
+            <option value="morning_only">ארוחת בוקר קלה בלבד</option>
+            <option value="full_morning_only">ארוחת בוקר מלאה בלבד</option>
+            <option value="coffee_only">מזנון קפה ושתייה בלבד</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="flabel">תוספות</label>
+          <div class="checks">
+            <label class="check-item">
+              <input type="checkbox" id="addFruits" onchange="calcPrice(); previewUpdate()">
+              🍓 תוספת פירות (+15 ₪ לאורח)
+            </label>
+            <label class="check-item">
+              <input type="checkbox" id="addMehadrin" onchange="calcPrice(); previewUpdate()">
+              🕍 מנה מהדרין (+35 ₪ + 150 ₪ הובלה)
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">💰</div>
+        <div class="section-title">פירוט עלויות</div>
+      </div>
+      <table class="price-tbl">
+        <thead>
+          <tr>
+            <th>פריט</th>
+            <th style="width:90px;text-align:center">כמות</th>
+            <th style="width:90px;text-align:left">ל/יחידה</th>
+            <th style="width:90px;text-align:left">סה״כ</th>
+          </tr>
+        </thead>
+        <tbody id="priceBody">
+          <tr class="empty-row"><td colspan="4">בחרי תפריט ומספר אורחים</td></tr>
+        </tbody>
+      </table>
+      <div class="total-strip">
+        <div>
+          <div class="total-lbl">סה״כ להצעה</div>
+          <div class="total-vat">לא כולל מע״מ</div>
+        </div>
+        <div id="totalNum" class="total-num">— ₪</div>
+      </div>
+    </div>
+
+    <!-- NOTES -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">📝</div>
+        <div class="section-title">הערות ובקשות</div>
+      </div>
+      <textarea class="finput" id="notes" placeholder="בקשות מיוחדות, סידור ישיבה, דרישות טכניות..." oninput="previewUpdate()"></textarea>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="action-bar">
+      <button class="btn-primary" onclick="sendQuote()">✉️ שלח הצעת מחיר במייל</button>
+      <button class="btn-outline" onclick="window.print()">🖨️ הדפס</button>
+      <button class="btn-outline" onclick="clearAll()">🗑️</button>
+    </div>
+
+  </div><!-- /form-panel -->
+
+  <!-- ══════════════ PREVIEW PANEL ══════════════ -->
+  <div class="preview-panel">
+    <div class="preview-header">
+      <div class="preview-title">תצוגת מייל ללקוח</div>
+      <div class="preview-actions">
+        <button class="pbtn" onclick="copyQuote()">העתק</button>
+        <button class="pbtn send" onclick="sendQuote()">✉️ שלח</button>
+      </div>
+    </div>
+    <div class="preview-scroll">
+      <div class="email-shell">
+
+        <!-- email meta -->
+        <div class="email-meta">
+          <div class="email-meta-row">
+            <span class="email-lbl">אל:</span>
+            <span class="email-val" id="previewTo">—</span>
+          </div>
+          <div class="email-meta-row">
+            <span class="email-lbl">נושא:</span>
+            <span class="email-val" id="previewSubject">הצעת מחיר – Even's אירוח</span>
+          </div>
+        </div>
+
+        <!-- email body = quote doc -->
+        <div class="email-body">
+          <div class="quote-doc">
+            <!-- doc header -->
+            <div class="qdoc-header">
+              <div>
+                <div class="qdoc-logo">Even's</div>
+                <div class="qdoc-tagline">אירוח • תרבות • תיבול | בית נחמיה</div>
+              </div>
+              <div class="qdoc-meta-right">
+                <div>תאריך הצעה: <strong id="qToday"></strong></div>
+                <div>מס׳ הצעה: <strong id="qNum"></strong></div>
+                <div>תוקף הצעה: 14 יום</div>
+              </div>
+            </div>
+
+            <!-- doc body -->
+            <div class="qdoc-body">
+
+              <!-- greeting -->
+              <div class="qdoc-greeting" id="qGreeting">
+                שלום רב,<br><br>
+                תודה על פנייתכם ועל העניין בשירותינו. להלן הצעת המחיר המבוקשת:
+              </div>
+
+              <!-- client details -->
+              <div class="qdoc-section">
+                <div class="qdoc-section-title">פרטי הלקוח</div>
+                <div class="qdoc-row"><span class="qdoc-key">שם:</span><span class="qdoc-val" id="qName">—</span></div>
+                <div class="qdoc-row"><span class="qdoc-key">חברה:</span><span class="qdoc-val" id="qCompany">—</span></div>
+                <div class="qdoc-row"><span class="qdoc-key">טלפון:</span><span class="qdoc-val" id="qPhone">—</span></div>
+                <div class="qdoc-row"><span class="qdoc-key">מייל:</span><span class="qdoc-val" id="qEmail">—</span></div>
+              </div>
+
+              <!-- event details -->
+              <div class="qdoc-section">
+                <div class="qdoc-section-title">פרטי האירוע</div>
+                <div class="qdoc-row"><span class="qdoc-key">תאריך:</span><span class="qdoc-val" id="qDate">—</span></div>
+                <div class="qdoc-row"><span class="qdoc-key">שעות:</span><span class="qdoc-val" id="qHours">—</span></div>
+                <div class="qdoc-row"><span class="qdoc-key">סוג אירוע:</span><span class="qdoc-val" id="qType">—</span></div>
+                <div class="qdoc-row"><span class="qdoc-key">מספר אורחים:</span><span class="qdoc-val" id="qGuests">—</span></div>
+                <div class="qdoc-row" id="qHallRow"><span class="qdoc-key">אולם:</span><span class="qdoc-val" id="qHall">—</span></div>
+              </div>
+
+              <!-- pricing -->
+              <div class="qdoc-section" id="qPriceSection" style="display:none">
+                <div class="qdoc-section-title">פירוט מחיר</div>
+                <table class="qdoc-price-table">
+                  <thead>
+                    <tr>
+                      <th>פריט</th>
+                      <th style="width:70px;text-align:center">כמות</th>
+                      <th style="width:80px;text-align:left">מחיר</th>
+                      <th style="width:80px;text-align:left">סה״כ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="qPriceRows"></tbody>
+                </table>
+                <div class="qdoc-total-row">
+                  <div>
+                    <div class="qdoc-total-label">סה״כ להצעה</div>
+                    <div class="qdoc-total-vat">לא כולל מע״מ</div>
+                  </div>
+                  <div class="qdoc-total-amount" id="qTotal">—</div>
+                </div>
+              </div>
+
+              <!-- notes -->
+              <div class="qdoc-section" id="qNotesSection" style="display:none">
+                <div class="qdoc-section-title">הערות</div>
+                <div class="qdoc-notes" id="qNotes"></div>
+              </div>
+
+              <!-- terms -->
+              <div class="qdoc-section">
+                <div class="qdoc-section-title">תנאים</div>
+                <div class="qdoc-terms">
+                  <strong>תשלום:</strong> שוטף +30. התאריך ישוריין בחתימת ההזמנה.<br>
+                  <strong>ביטול מעל 4 ימי עסקים:</strong> ללא עלות | <strong>2-4 ימים:</strong> 25% | <strong>יום לפני:</strong> 50% | <strong>ביום:</strong> 100%<br>
+                  <strong>שינוי כמות:</strong> עד 3 ימי עסקים לפני האירוע. המחיר לפי הגבוה בין ההזמנה לפועל.
+                </div>
+              </div>
+
+              <!-- closing -->
+              <div class="qdoc-greeting" style="margin-top:0; color:var(--muted); font-size:12px;">
+                אנו נעשה הכל כדי להנעים את שהותכם ולהפוך את האירוע לחוויה בלתי נשכחת.<br>
+                לכל שאלה ניתן לפנות אלינו בוואטסאפ או במייל.
+              </div>
+
+            </div><!-- /qdoc-body -->
+
+            <!-- doc footer -->
+            <div class="qdoc-footer">
+              <div class="qdoc-footer-logo">Even's</div>
+              <div>דרך הכלנית 38, בית נחמיה</div>
+              <div><a href="mailto:michal@evens.co.il">michal@evens.co.il</a></div>
+              <div><a href="https://www.evens.co.il">www.evens.co.il</a></div>
+            </div>
+
+          </div><!-- /quote-doc -->
+        </div>
+      </div><!-- /email-shell -->
+    </div><!-- /preview-scroll -->
+  </div><!-- /preview-panel -->
+
+</div><!-- /layout -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── MOCK LEADS DB ───
+const LEADS = [
+  { id:"L001", display:"L001 – יפה כהן | כזה או אחר בע״מ", clientName:"יפה כהן", companyName:"כזה או אחר בע״מ", phone:"054-5555555", email:"yafa@kazeh.co.il", eventDate:"2025-12-25", eventType:"סדנת עבודה", startTime:"09:00", endTime:"15:00", guests:"15", menu:"light_morning", hall:"אולם טורקיז (עד 20 אורחים)", notes:"בקשה לחדר טורקיז, סידור אי-שייח." },
+  { id:"L002", display:"L002 – אבי לוי | טכנולוגיות אופק", clientName:"אבי לוי", companyName:"טכנולוגיות אופק בע״מ", phone:"052-1234567", email:"avi@ofek-tech.com", eventDate:"2026-01-15", eventType:"כנס עסקי", startTime:"08:30", endTime:"17:00", guests:"60", menu:"full_morning", hall:"אולם פנינה (עד 80 אורחים)", notes:"נדרש מקרן. יש צמחונים." },
+  { id:"L003", display:"L003 – מיכל ברון | קבוצת ברון", clientName:"מיכל ברון", companyName:"קבוצת ברון", phone:"050-9876543", email:"michal@baron-group.co.il", eventDate:"2026-02-03", eventType:"ישיבת הנהלה", startTime:"10:00", endTime:"14:00", guests:"10", menu:"coffee_only", hall:"חדר ישיבות (עד 12 אורחים)", notes:"" },
+  { id:"L004", display:"L004 – דניאל אזולאי | ניו-טק", clientName:"דניאל אזולאי", companyName:"ניו-טק סטארטאפ", phone:"058-3456789", email:"daniel@newtech.io", eventDate:"2026-03-20", eventType:"השקת מוצר", startTime:"18:00", endTime:"22:00", guests:"45", menu:"full_morning", hall:"אולם פנינה (עד 80 אורחים)", notes:"אירוע ערב, תאורה מיוחדת." },
+  { id:"L005", display:"L005 – שירה גולן | עמותת גשר", clientName:"שירה גולן", companyName:"עמותת גשר", phone:"053-7654321", email:"shira@gesher.org.il", eventDate:"2026-04-08", eventType:"ימי עיון", startTime:"09:00", endTime:"16:00", guests:"30", menu:"full_morning", hall:"אולם פנינה (עד 80 אורחים)", notes:"נגישות לנכים." }
+];
+
+const MENU_PRICES = {
+  light_morning:    { label:"ארוחת בוקר קלה + צהריים", price:195 },
+  full_morning:     { label:"ארוחת בוקר מלאה + צהריים", price:225 },
+  morning_only:     { label:"ארוחת בוקר קלה", price:85 },
+  full_morning_only:{ label:"ארוחת בוקר מלאה", price:115 },
+  coffee_only:      { label:"מזנון קפה ושתייה", price:45 }
+};
+
+// init
+const sel = document.getElementById("leadSel");
+LEADS.forEach(l => {
+  const o = document.createElement("option");
+  o.value = l.id; o.textContent = l.display;
+  sel.appendChild(o);
+});
+
+// quote number + today
+let quoteNum = "EVN-" + new Date().getFullYear() + "-" + String(Math.floor(Math.random()*900)+100);
+document.getElementById("qNum").textContent = quoteNum;
+const today = new Date();
+document.getElementById("qToday").textContent = today.toLocaleDateString("he-IL");
+
+// ─── FILL FROM LEAD ───
+function fillFromLead() {
+  const id = document.getElementById("leadSel").value;
+  if (!id) { toast("יש לבחור ליד מהרשימה ⚠️"); return; }
+  const l = LEADS.find(x => x.id === id);
+  const MAP = { clientName:"clientName", companyName:"companyName", phone:"phone", email:"email", eventDate:"eventDate", eventType:"eventType", startTime:"startTime", endTime:"endTime", guests:"guests", menu:"menu", hall:"hall", notes:"notes" };
+  Object.entries(MAP).forEach(([key, fid]) => {
+    const el = document.getElementById(fid);
+    if (el && l[key] !== undefined) {
+      el.value = l[key];
+      el.classList.add("auto");
+      setTimeout(() => el.classList.remove("auto"), 2500);
+    }
+  });
+  const fs = document.getElementById("fillStatus");
+  document.getElementById("fillName").textContent = `פרטי ${l.clientName} מולאו אוטומטית`;
+  fs.classList.add("show");
+  calcPrice();
+  previewUpdate();
+  toast(`⚡ ${l.clientName} נטענה בהצלחה`);
+}
+
+// ─── CALC PRICE ───
+function calcPrice() {
+  const menu = document.getElementById("menu").value;
+  const guests = parseInt(document.getElementById("guests").value) || 0;
+  const fruits = document.getElementById("addFruits").checked;
+  const mehad = document.getElementById("addMehadrin").checked;
+  const tbody = document.getElementById("priceBody");
+
+  if (!menu || !guests) {
+    tbody.innerHTML = `<tr class="empty-row"><td colspan="4">בחרי תפריט ומספר אורחים</td></tr>`;
+    document.getElementById("totalNum").textContent = "— ₪";
+    return;
+  }
+
+  let rows = [], total = 0;
+  const m = MENU_PRICES[menu];
+  const mt = m.price * guests;
+  total += mt;
+  rows.push({ label: m.label, qty: guests + " אורחים", unit: m.price + " ₪", sub: mt });
+
+  if (fruits) {
+    const ft = 15 * guests;
+    total += ft;
+    rows.push({ label:"תוספת פירות", qty: guests + " אורחים", unit:"15 ₪", sub: ft });
+  }
+  if (mehad) {
+    const mht = 35 * guests + 150;
+    total += mht;
+    rows.push({ label:"מנה מהדרין + הובלה", qty: guests + " מנות", unit:"35 ₪+150", sub: mht });
+  }
+
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.label}</td>
+      <td style="text-align:center">${r.qty}</td>
+      <td class="amt">${r.unit}</td>
+      <td class="amt">${r.sub.toLocaleString("he-IL")} ₪</td>
+    </tr>`).join("");
+
+  document.getElementById("totalNum").textContent = total.toLocaleString("he-IL") + " ₪";
+}
+
+// ─── PREVIEW UPDATE ───
+function previewUpdate() {
+  const v = id => document.getElementById(id).value;
+  const name = v("clientName"), company = v("companyName"), phone = v("phone"), email = v("email");
+  const date = v("eventDate"), start = v("startTime"), end = v("endTime"), type = v("eventType"), guests = v("guests"), hall = v("hall"), notes = v("notes");
+  const menu = v("menu");
+  const fruits = document.getElementById("addFruits").checked;
+  const mehad = document.getElementById("addMehadrin").checked;
+
+  // email meta
+  document.getElementById("previewTo").textContent = email && name ? `${name} <${email}>` : (email || "—");
+  document.getElementById("previewSubject").textContent = `הצעת מחיר – Even's אירוח${type ? " | " + type : ""}`;
+
+  // greeting
+  if (name) {
+    document.getElementById("qGreeting").innerHTML = `שלום ${name} הנכבד/ה,<br><br>תודה על פנייתכם ועל העניין בשירותינו. להלן הצעת המחיר המבוקשת עבור <strong>${company || "החברה"}</strong>:`;
+  }
+
+  // client
+  setText("qName", name);
+  setText("qCompany", company);
+  setText("qPhone", phone);
+  setText("qEmail", email);
+
+  // event
+  const dateHe = date ? new Date(date).toLocaleDateString("he-IL") : "—";
+  setText("qDate", dateHe);
+  setText("qHours", start && end ? `${start} – ${end}` : (start || "—"));
+  setText("qType", type || "—");
+  setText("qGuests", guests ? guests + " אורחים" : "—");
+  const hallRow = document.getElementById("qHallRow");
+  if (hall) { setText("qHall", hall); hallRow.style.display = "flex"; } else { hallRow.style.display = "none"; }
+
+  // pricing in preview
+  const gNum = parseInt(guests) || 0;
+  const pSection = document.getElementById("qPriceSection");
+  if (menu && gNum) {
+    pSection.style.display = "block";
+    let rows = [], total = 0;
+    const m = MENU_PRICES[menu];
+    const mt = m.price * gNum; total += mt;
+    rows.push({ label: m.label, qty: gNum + " אורחים", unit: m.price + " ₪", sub: mt });
+    if (fruits) { const ft=15*gNum; total+=ft; rows.push({ label:"תוספת פירות", qty:gNum+" אורחים", unit:"15 ₪", sub:ft }); }
+    if (mehad) { const mht=35*gNum+150; total+=mht; rows.push({ label:"מנה מהדרין + הובלה", qty:gNum+" מנות", unit:"35 ₪+150", sub:mht }); }
+    document.getElementById("qPriceRows").innerHTML = rows.map(r => `<tr><td>${r.label}</td><td style="text-align:center">${r.qty}</td><td class="pamount">${r.unit}</td><td class="pamount">${r.sub.toLocaleString("he-IL")} ₪</td></tr>`).join("");
+    document.getElementById("qTotal").textContent = total.toLocaleString("he-IL") + " ₪";
+  } else {
+    pSection.style.display = "none";
+  }
+
+  // notes
+  const noteSec = document.getElementById("qNotesSection");
+  if (notes.trim()) {
+    noteSec.style.display = "block";
+    document.getElementById("qNotes").textContent = notes;
+  } else {
+    noteSec.style.display = "none";
+  }
+}
+
+function setText(id, val) {
+  document.getElementById(id).textContent = val || "—";
+}
+
+// ─── SEND / COPY ───
+function sendQuote() {
+  const name = document.getElementById("clientName").value;
+  const email = document.getElementById("email").value;
+  const type = document.getElementById("eventType").value;
+  if (!name || !email) { toast("יש למלא שם ומייל לקוח ⚠️"); return; }
+  const subj = encodeURIComponent(`הצעת מחיר – Even's אירוח${type ? " | " + type : ""}`);
+  const body = encodeURIComponent(`שלום ${name},\n\nמצ"ב הצעת המחיר עבור האירוע שלכם.\n\nלכל שאלה אנחנו כאן!\n\nבברכה,\nמיכל\nEven's אירוח • תרבות • תיבול\n052-4763530 | michal@evens.co.il`);
+  window.open(`mailto:${email}?subject=${subj}&body=${body}`);
+  toast("✉️ פותח אפליקציית מייל...");
+}
+
+function copyQuote() {
+  const n = document.getElementById("clientName").value || "הלקוח";
+  const d = document.getElementById("eventDate").value;
+  const t = document.getElementById("eventType").value;
+  const g = document.getElementById("guests").value;
+  const total = document.getElementById("totalNum").textContent;
+  const txt = `הצעת מחיר – Even's\n\nלקוח: ${n}\nתאריך: ${d || "—"}\nסוג: ${t || "—"}\nאורחים: ${g || "—"}\nסה"כ: ${total}\n\nwww.evens.co.il`;
+  navigator.clipboard.writeText(txt).then(() => toast("✅ הועתק ללוח"));
+}
+
+function clearAll() {
+  ["clientName","companyName","phone","email","eventDate","eventType","startTime","endTime","guests","hall","menu","notes"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = (id === "startTime") ? "09:00" : (id === "endTime") ? "17:00" : "";
+  });
+  document.getElementById("addFruits").checked = false;
+  document.getElementById("addMehadrin").checked = false;
+  document.getElementById("leadSel").value = "";
+  document.getElementById("fillStatus").classList.remove("show");
+  calcPrice();
+  previewUpdate();
+  toast("🗑️ הטופס נוקה");
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 3000);
+}
+</script>
+</body>
+</html>
