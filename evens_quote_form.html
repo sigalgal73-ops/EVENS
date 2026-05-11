@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Even's – טופס הצעת מחיר</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;900&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root {
   --sage: #5C7A5C;
@@ -820,8 +822,9 @@ textarea.finput {
 
     <!-- ACTIONS -->
     <div class="action-bar">
-      <button class="btn-primary" onclick="sendQuote()">✉️ שלח הצעת מחיר במייל</button>
-      <button class="btn-outline" onclick="window.print()">🖨️ הדפס</button>
+      <button class="btn-primary" onclick="downloadPDF()">📄 הורד PDF</button>
+      <button class="btn-outline" onclick="sendQuote()">✉️ שלח במייל</button>
+      <button class="btn-outline" onclick="window.print()">🖨️</button>
       <button class="btn-outline" onclick="clearAll()">🗑️</button>
     </div>
 
@@ -832,6 +835,7 @@ textarea.finput {
     <div class="preview-header">
       <div class="preview-title">תצוגת מייל ללקוח</div>
       <div class="preview-actions">
+        <button class="pbtn" onclick="downloadPDF()">📄 PDF</button>
         <button class="pbtn" onclick="copyQuote()">העתק</button>
         <button class="pbtn send" onclick="sendQuote()">✉️ שלח</button>
       </div>
@@ -1161,6 +1165,225 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 3000);
+}
+
+// ─── DOWNLOAD PDF ───
+function downloadPDF() {
+  const name     = document.getElementById("clientName").value;
+  const company  = document.getElementById("companyName").value;
+  const phone    = document.getElementById("phone").value;
+  const email    = document.getElementById("email").value;
+  const date     = document.getElementById("eventDate").value;
+  const start    = document.getElementById("startTime").value;
+  const end      = document.getElementById("endTime").value;
+  const type     = document.getElementById("eventType").value;
+  const guests   = document.getElementById("guests").value;
+  const hall     = document.getElementById("hall").value;
+  const menu     = document.getElementById("menu").value;
+  const notes    = document.getElementById("notes").value;
+  const fruits   = document.getElementById("addFruits").checked;
+  const mehad    = document.getElementById("addMehadrin").checked;
+
+  if (!name || !company) { toast("יש למלא שם לקוח ושם חברה ⚠️"); return; }
+
+  toast("⏳ מייצר PDF...");
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:"portrait", unit:"mm", format:"a4" });
+
+  const W = 210, H = 297;
+  const SAGE_DARK  = [61, 92, 61];
+  const SAGE       = [92, 122, 92];
+  const SAGE_PALE  = [235, 240, 235];
+  const WARM       = [196, 154, 42];
+  const CREAM      = [250, 247, 240];
+  const TEXT       = [44, 34, 24];
+  const MUTED      = [122, 106, 88];
+  const BORDER     = [216, 206, 184];
+  const WARM_PALE  = [245, 237, 212];
+
+  // ── HEADER ──
+  doc.setFillColor(...SAGE_DARK);
+  doc.rect(0, 0, W, 38, "F");
+
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(22);
+  doc.setFont("helvetica","bold");
+  doc.text("Even's", W - 14, 16, { align:"right" });
+
+  doc.setFontSize(8);
+  doc.setFont("helvetica","normal");
+  doc.setTextColor(255,255,255,0.7);
+  doc.text("airuch • tarbut • tibul | Beit Nehemia", W - 14, 22, { align:"right" });
+
+  // quote meta (right side of header = left in LTR pdf)
+  doc.setFontSize(8);
+  doc.setTextColor(...WARM);
+  const today = new Date().toLocaleDateString("he-IL");
+  doc.text(`${quoteNum}`, 14, 14);
+  doc.setTextColor(200,200,200);
+  doc.text(`תאריך: ${today}`, 14, 20);
+  doc.text("תוקף הצעה: 14 יום", 14, 26);
+
+  // ── GREETING ──
+  let y = 48;
+  doc.setTextColor(...TEXT);
+  doc.setFontSize(11);
+  doc.setFont("helvetica","normal");
+  const greet = name ? `שלום ${name},` : "שלום,";
+  doc.text(greet, W - 14, y, { align:"right" });
+  y += 6;
+  doc.setFontSize(9);
+  doc.setTextColor(...MUTED);
+  doc.text("להלן הצעת המחיר המבוקשת עבור " + (company || "חברתכם") + ":", W - 14, y, { align:"right" });
+  y += 10;
+
+  // ── SECTION HELPER ──
+  function sectionTitle(title, yy) {
+    doc.setFillColor(...SAGE_PALE);
+    doc.rect(14, yy - 4, W - 28, 7, "F");
+    doc.setFontSize(8);
+    doc.setTextColor(...SAGE);
+    doc.setFont("helvetica","bold");
+    doc.text(title, W - 17, yy + 1, { align:"right" });
+    return yy + 7;
+  }
+
+  function rowLine(label, val, yy) {
+    doc.setFontSize(9);
+    doc.setFont("helvetica","normal");
+    doc.setTextColor(...MUTED);
+    doc.text(label, W - 17, yy, { align:"right" });
+    doc.setTextColor(...TEXT);
+    doc.text(val || "—", W - 55, yy, { align:"right" });
+    doc.setDrawColor(...BORDER);
+    doc.setLineWidth(0.2);
+    doc.line(14, yy + 2, W - 14, yy + 2);
+    return yy + 8;
+  }
+
+  // ── CLIENT DETAILS ──
+  y = sectionTitle("פרטי הלקוח", y);
+  y += 3;
+  y = rowLine("שם:", name, y);
+  y = rowLine("חברה:", company, y);
+  y = rowLine("טלפון:", phone, y);
+  y = rowLine("מייל:", email, y);
+  y += 4;
+
+  // ── EVENT DETAILS ──
+  y = sectionTitle("פרטי האירוע", y);
+  y += 3;
+  const dateHe = date ? new Date(date).toLocaleDateString("he-IL") : "—";
+  y = rowLine("תאריך:", dateHe, y);
+  y = rowLine("שעות:", start && end ? `${start} – ${end}` : "—", y);
+  y = rowLine("סוג אירוע:", type || "—", y);
+  y = rowLine("מספר אורחים:", guests ? guests + " אורחים" : "—", y);
+  if (hall) y = rowLine("אולם:", hall, y);
+  y += 4;
+
+  // ── PRICING TABLE ──
+  if (menu && parseInt(guests)) {
+    y = sectionTitle("פירוט מחיר", y);
+    y += 2;
+
+    let priceRows = [], total = 0;
+    const gNum = parseInt(guests);
+    const m = MENU_PRICES[menu];
+    const mt = m.price * gNum; total += mt;
+    priceRows.push([m.label, gNum + " אורחים", m.price + " ₪", mt.toLocaleString("he-IL") + " ₪"]);
+    if (fruits) {
+      const ft = 15 * gNum; total += ft;
+      priceRows.push(["תוספת פירות", gNum + " אורחים", "15 ₪", ft.toLocaleString("he-IL") + " ₪"]);
+    }
+    if (mehad) {
+      const mht = 35 * gNum + 150; total += mht;
+      priceRows.push(["מנה מהדרין + הובלה", gNum + " מנות", "35 ₪+150", mht.toLocaleString("he-IL") + " ₪"]);
+    }
+
+    doc.autoTable({
+      startY: y,
+      head: [["פריט", "כמות", "מחיר ליחידה", "סה\"כ"]],
+      body: priceRows,
+      theme: "grid",
+      styles: { font:"helvetica", fontSize:9, textColor:TEXT, cellPadding:3, halign:"right" },
+      headStyles: { fillColor:SAGE_DARK, textColor:[255,255,255], fontStyle:"bold", fontSize:8 },
+      alternateRowStyles: { fillColor:CREAM },
+      columnStyles: { 3: { fontStyle:"bold", textColor:SAGE_DARK } },
+      margin: { left:14, right:14 },
+    });
+
+    y = doc.lastAutoTable.finalY + 4;
+
+    // total bar
+    doc.setFillColor(...SAGE_DARK);
+    doc.roundedRect(14, y, W - 28, 12, 2, 2, "F");
+    doc.setTextColor(255,255,255);
+    doc.setFontSize(8);
+    doc.text("לא כולל מע\"מ", 18, y + 8);
+    doc.setFontSize(12);
+    doc.setFont("helvetica","bold");
+    doc.setTextColor(...WARM);
+    doc.text(total.toLocaleString("he-IL") + " ₪", W - 18, y + 8, { align:"right" });
+    doc.setFontSize(8);
+    doc.setTextColor(200,200,200);
+    doc.text("סה\"כ להצעה:", W - 50, y + 8, { align:"right" });
+    y += 18;
+  }
+
+  // ── NOTES ──
+  if (notes.trim()) {
+    y = sectionTitle("הערות ובקשות מיוחדות", y);
+    y += 3;
+    doc.setFillColor(...CREAM);
+    doc.setDrawColor(...BORDER);
+    doc.setLineWidth(0.3);
+    const noteLines = doc.splitTextToSize(notes, W - 40);
+    const noteH = noteLines.length * 5 + 6;
+    doc.rect(14, y - 2, W - 28, noteH, "FD");
+    doc.setTextColor(...MUTED);
+    doc.setFontSize(9);
+    doc.setFont("helvetica","normal");
+    doc.text(noteLines, W - 18, y + 3, { align:"right" });
+    y += noteH + 6;
+  }
+
+  // ── TERMS ──
+  y = sectionTitle("תנאי ביטול ותשלום", y);
+  y += 3;
+  doc.setFillColor(...WARM_PALE);
+  doc.setDrawColor(232, 212, 160);
+  doc.setLineWidth(0.3);
+  const terms = [
+    "תשלום: שוטף +30. התאריך ישוריין בחתימת ההזמנה.",
+    "ביטול מעל 4 ימי עסקים: ללא עלות  |  2-4 ימים: 25%  |  יום לפני: 50%  |  ביום: 100%",
+    "שינוי כמות: עד 3 ימי עסקים לפני האירוע. המחיר לפי הגבוה בין ההזמנה לפועל."
+  ];
+  const termsH = terms.length * 6 + 8;
+  doc.rect(14, y - 2, W - 28, termsH, "FD");
+  doc.setTextColor(...MUTED);
+  doc.setFontSize(8);
+  terms.forEach((line, i) => {
+    doc.text(line, W - 18, y + 3 + i * 6, { align:"right" });
+  });
+  y += termsH + 8;
+
+  // ── FOOTER ──
+  doc.setFillColor(...SAGE_DARK);
+  doc.rect(0, H - 22, W, 22, "F");
+  doc.setTextColor(...WARM);
+  doc.setFontSize(10);
+  doc.setFont("helvetica","bold");
+  doc.text("Even's", W - 14, H - 13, { align:"right" });
+  doc.setTextColor(200,200,200);
+  doc.setFontSize(7.5);
+  doc.setFont("helvetica","normal");
+  doc.text("דרך הכלנית 38, בית נחמיה  |  michal@evens.co.il  |  052-4763530  |  www.evens.co.il", W/2, H - 8, { align:"center" });
+
+  // ── SAVE ──
+  const filename = `הצעת_מחיר_Evens_${name ? name.replace(/\s/g,"_") : "לקוח"}_${date || "2025"}.pdf`;
+  doc.save(filename);
+  toast("✅ PDF הורד בהצלחה! צרפי אותו למייל ללקוח");
 }
 </script>
 </body>
