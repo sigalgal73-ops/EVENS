@@ -70,6 +70,23 @@
     </div>
   </div>
 
+  <!-- טופס נסתר — Netlify מזהה בזמן build ושולח מייל -->
+  <form name="evens-lead" netlify netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="evens-lead" />
+    <input type="text"   name="bot-field" />
+    <input type="text"   name="name" />
+    <input type="text"   name="company" />
+    <input type="text"   name="phone" />
+    <input type="email"  name="email" />
+    <input type="text"   name="eventCategory" />
+    <input type="text"   name="eventType" />
+    <input type="text"   name="date" />
+    <input type="text"   name="hours" />
+    <input type="text"   name="size" />
+    <input type="text"   name="catering" />
+  </form>
+
   <script src="evens-bot.js"></script>
 </body>
 </html>
+
