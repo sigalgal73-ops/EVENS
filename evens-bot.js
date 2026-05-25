@@ -356,7 +356,7 @@
   const MSG = document.getElementById('ev-msgs');
   const FILL = document.getElementById('ev-fill');
   const PLBL = document.getElementById('ev-lbl');
-  const TOTAL = 10;
+  const TOTAL = 11;
 
   let state = {};
   function fn() { return state.name ? state.name.split(' ')[0] : ''; }
@@ -700,10 +700,17 @@
 
   // ── FLOW ──
   const FLOW = [
-    // 0 → שלב 1: טופס פרטים מאוחד (שם + טלפון + מייל)
+    // 0 → שלב 1: פתיחה חמה
     {
       step: 1,
-      bot: 'היי 😊 איזה כיף שפנית אלינו!\nאני הבוט של Even\'s — אשמח לעזור לך לתכנן אירוע מושלם אצלנו ✨\n\nנתחיל בכמה פרטים קצרים:',
+      bot: 'ברוכים הבאים ל-Even\'s! 🌿\nאנחנו כאן כדי לעזור לכם לתכנן אירוע שלא ישכח.\nלפני שנתחיל — נשמח להכיר 😊',
+      isWelcome: true,
+      run: (v, n) => { n(); }
+    },
+    // 1 → שלב 2: טופס פרטים מאוחד (שם + טלפון + מייל)
+    {
+      step: 2,
+      bot: () => 'כמה פרטים קצרים ונתחיל:',
       isContactForm: true,
       run: (v, n) => { state.name = v.name; state.phone = v.phone; state.email = v.email; n(); }
     },
@@ -763,12 +770,12 @@
       isOptsHours: true,
       run: (c, n) => { state.hours = c; n(); }
     },
-    // 9 → שלב 10: הסכמה לדיוור
+    // 9 → שלב 10: הסכמה לדיוור — צ'קבוקס
     {
       step: 8,
-      bot: () => `כמעט סיימנו! 😊\n\nאני מסכימ/ה לקבל עדכונים ומבצעים מ-Even\'s:`,
-      opts: ['כן, אשמח לקבל עדכונים 💌', 'לא תודה'],
-      run: (c, n) => { state.consent = c.includes('כן') ? 'כן' : 'לא'; submitLead(); n(); }
+      bot: () => `כמעט סיימנו! 😊`,
+      isConsentCheck: true,
+      run: (v, n) => { state.consent = v; submitLead(); n(); }
     },
     // 10 → שלב 11: תודה
     {
@@ -814,6 +821,42 @@
           addUser(c);
           s.run(c, () => setTimeout(() => runStep(idx + 1), 350));
         });
+        return;
+      }
+      if (s.isConsentCheck) {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'padding: 4px 16px 12px; direction: rtl;';
+        wrap.innerHTML = `
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-family:Heebo,Arial,sans-serif;font-size:14px;color:#2d2d2d;">
+            <input type="checkbox" id="ev-consent-chk" style="width:18px;height:18px;accent-color:#5a7c4a;cursor:pointer;flex-shrink:0;" />
+            <span>אני מסכימ/ה לקבל עדכונים ומבצעים מ-Even's 💌</span>
+          </label>
+          <button id="ev-consent-btn" class="ev-send" style="width:100%;margin-top:12px;padding:13px;">המשך ←</button>
+        `;
+        MSG.appendChild(wrap);
+        MSG.scrollTop = MSG.scrollHeight;
+        document.getElementById('ev-consent-btn').onclick = () => {
+          const checked = document.getElementById('ev-consent-chk').checked;
+          wrap.querySelectorAll('input,button').forEach(el => el.disabled = true);
+          wrap.style.opacity = '.5';
+          addUser(checked ? '✅ מסכימ/ה לקבל עדכונים' : 'ללא דיוור');
+          s.run(checked ? 'כן' : 'לא', () => setTimeout(() => runStep(idx + 1), 350));
+        };
+        return;
+      }
+      if (s.isWelcome) {
+        // Add a start button
+        const startBtn = document.createElement('button');
+        startBtn.className = 'ev-opt';
+        startBtn.textContent = 'בואו נתחיל! ✨';
+        startBtn.style.cssText = 'margin: 4px 16px; background:#5a7c4a; color:#fff; border-color:#5a7c4a;';
+        startBtn.onclick = () => {
+          startBtn.disabled = true;
+          startBtn.style.opacity = '.5';
+          s.run(null, () => setTimeout(() => runStep(idx + 1), 300));
+        };
+        MSG.appendChild(startBtn);
+        MSG.scrollTop = MSG.scrollHeight;
         return;
       }
       if (s.isContactForm) {
