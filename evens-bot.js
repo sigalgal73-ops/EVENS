@@ -19,7 +19,7 @@
       display: flex; align-items: center; justify-content: center;
       border: none; transition: all .25s;
       animation: evPulse 3s ease-in-out infinite;
-      overflow: hidden; padding: 8px;
+      padding: 10px;
     }
     .ev-fab:hover { transform: scale(1.08); box-shadow: 0 6px 32px rgba(90,124,74,0.75); }
     @keyframes evPulse {
