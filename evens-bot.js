@@ -436,9 +436,13 @@
 
 
 
+  let chatStarted = false;
   fab.onclick = () => {
     win.classList.toggle('open');
-    if (win.classList.contains('open') && MSG.children.length === 0) runStep(0);
+    if (win.classList.contains('open') && !chatStarted) {
+      chatStarted = true;
+      runStep(0);
+    }
   };
   document.getElementById('ev-close').onclick = () => win.classList.remove('open');
 
@@ -538,13 +542,7 @@
     btn.onclick = sub;
     inp.onkeydown = e => { if (e.key === 'Enter') sub(); };
     r.appendChild(inp); r.appendChild(btn);
-    // Insert before bottom bar if it exists
-    const bottomBar = win.querySelector('.ev-bottom-bar');
-    if (bottomBar) {
-      win.insertBefore(r, bottomBar);
-    } else {
-      MSG.appendChild(r);
-    }
+    MSG.appendChild(r);
     MSG.scrollTop = MSG.scrollHeight;
     setTimeout(() => inp.focus(), 100);
   }
@@ -775,7 +773,7 @@
         const rb = document.createElement('button');
         rb.className = 'ev-restart';
         rb.textContent = '↺ התחל מחדש';
-        rb.onclick = () => { state = {}; MSG.innerHTML = ''; runStep(0); };
+        rb.onclick = () => { state = {}; MSG.innerHTML = ''; chatStarted = true; runStep(0); };
         MSG.appendChild(rb);
         MSG.scrollTop = MSG.scrollHeight;
         return;
