@@ -237,8 +237,6 @@
       transition: background .18s;
     }
     .ev-restart:hover { background: #f0e8d8; }
-  `;
-
     /* ── נגישות ו-WhatsApp ── */
     .ev-a11y-bar {
       position: fixed; left: 24px; bottom: 104px; z-index: 9998;
@@ -305,6 +303,8 @@
       transition: background .15s;
     }
     .ev-a11y-reset:hover { background: #e0d8c8; }
+
+  `;
 
   document.head.appendChild(style);
 
@@ -759,7 +759,7 @@
     // 10 → שלב 11: תודה
     {
       step: 11,
-      bot: () => `תודה רבה, ${fn()}! 🌿💫\n\nקיבלנו את כל הפרטים שלך ואנחנו ממש שמחים שפנית אלינו!\nמיכל או אביב יחזרו אליך בהקדם — בדרך כלל תוך יום עסקים אחד.\n\nמחכים לכם אצלנו ב-Even's 🏡✨`,
+      bot: () => `תודה רבה, ${fn()}! 🌿💫\n\nקיבלנו את כל הפרטים שלך ואנחנו ממש שמחים שפנית אלינו!\nמיכל או אביב יחזרו אליך בהקדם — בדרך כלל תוך יום עסקים אחד.\n\nמחכים לכם אצלנו ב-Even&#39;s 🏡✨`,
       isFinal: true
     },
     // 11 → שלב 12: סיכום + לינקים
