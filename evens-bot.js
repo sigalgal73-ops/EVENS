@@ -726,7 +726,7 @@
       step: 3,
       bot: () => {
         const cat = state.eventCategory || '';
-        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ✨\n\nמאיזה חברה / ארגון את/ה?`;
+        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם שקט ופסטורלי בבית נחמיה\n(ליד שהם), מוקף טבע — מושלם לאירועים עסקיים ✨\n\nמאיזה חברה / ארגון את/ה?`;
         return null; // skip for non-business
       },
       isSkippable: true,
@@ -845,18 +845,8 @@
         return;
       }
       if (s.isWelcome) {
-        // Add a start button
-        const startBtn = document.createElement('button');
-        startBtn.className = 'ev-opt';
-        startBtn.textContent = 'בואו נתחיל! ✨';
-        startBtn.style.cssText = 'margin: 4px 16px; background:#5a7c4a; color:#fff; border-color:#5a7c4a;';
-        startBtn.onclick = () => {
-          startBtn.disabled = true;
-          startBtn.style.opacity = '.5';
-          s.run(null, () => setTimeout(() => runStep(idx + 1), 300));
-        };
-        MSG.appendChild(startBtn);
-        MSG.scrollTop = MSG.scrollHeight;
+        // Auto-advance after showing welcome message
+        s.run(null, () => setTimeout(() => runStep(idx + 1), 800));
         return;
       }
       if (s.isContactForm) {
