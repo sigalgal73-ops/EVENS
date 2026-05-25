@@ -316,7 +316,7 @@
   // ── FAB ──
   const fab = document.createElement('button');
   fab.className = 'ev-fab';
-  fab.innerHTML = `<span style="font-family:Georgia,serif;font-size:28px;font-weight:700;color:#fff;letter-spacing:-1px;">E</span>`;
+  fab.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6l-4 4V6a2 2 0 0 1 2-2z"/><circle cx="9" cy="11" r="1" fill="#fff"/><circle cx="12" cy="11" r="1" fill="#fff"/><circle cx="15" cy="11" r="1" fill="#fff"/></svg>`;
   document.body.appendChild(fab);
 
   // ── WINDOW ──
@@ -356,7 +356,7 @@
   const MSG = document.getElementById('ev-msgs');
   const FILL = document.getElementById('ev-fill');
   const PLBL = document.getElementById('ev-lbl');
-  const TOTAL = 12;
+  const TOTAL = 10;
 
   let state = {};
   function fn() { return state.name ? state.name.split(' ')[0] : ''; }
@@ -657,39 +657,66 @@
     });
   }
 
+
+  function addContactForm(onSub) {
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'padding: 0 16px 12px; direction: rtl;';
+    wrap.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div>
+          <label style="font-size:12px;color:#5a7c4a;font-weight:600;font-family:Heebo,Arial,sans-serif;display:block;margin-bottom:4px;">שם מלא *</label>
+          <input id="cf-name" type="text" placeholder="שם פרטי + שם משפחה" class="ev-input" style="width:100%;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:12px;color:#5a7c4a;font-weight:600;font-family:Heebo,Arial,sans-serif;display:block;margin-bottom:4px;">טלפון *</label>
+          <input id="cf-phone" type="tel" placeholder="מספר טלפון" class="ev-input" style="width:100%;box-sizing:border-box;" />
+        </div>
+        <div>
+          <label style="font-size:12px;color:#5a7c4a;font-weight:600;font-family:Heebo,Arial,sans-serif;display:block;margin-bottom:4px;">מייל *</label>
+          <input id="cf-email" type="email" placeholder="כתובת מייל" class="ev-input" style="width:100%;box-sizing:border-box;" />
+        </div>
+        <div id="cf-error" style="font-size:12px;color:#c0392b;display:none;font-family:Heebo,Arial,sans-serif;">יש למלא את כל השדות</div>
+        <button id="cf-submit" class="ev-send" style="width:100%;padding:13px;">המשך ←</button>
+      </div>
+    `;
+    MSG.appendChild(wrap);
+    MSG.scrollTop = MSG.scrollHeight;
+    setTimeout(() => document.getElementById('cf-name').focus(), 100);
+
+    document.getElementById('cf-submit').onclick = () => {
+      const name  = document.getElementById('cf-name').value.trim();
+      const phone = document.getElementById('cf-phone').value.trim();
+      const email = document.getElementById('cf-email').value.trim();
+      if (!name || !phone || !email) {
+        document.getElementById('cf-error').style.display = 'block';
+        return;
+      }
+      // Disable form
+      wrap.querySelectorAll('input, button').forEach(el => { el.disabled = true; });
+      wrap.style.opacity = '.5';
+      onSub({ name, phone, email });
+    };
+  }
+
   // ── FLOW ──
   const FLOW = [
-    // 0 → שלב 1: פתיחה + שם
+    // 0 → שלב 1: טופס פרטים מאוחד (שם + טלפון + מייל)
     {
       step: 1,
-      bot: 'היי 😊 איזה כיף שפנית אלינו!\nאני הבוט של Even\'s — אשמח לעזור לך לתכנן אירוע מושלם אצלנו ✨\n\nנתחיל בהיכרות קצרה — מה שמך?',
-      isInput: true, ph: 'שם פרטי + שם משפחה',
-      run: (v, n) => { state.name = v; n(); }
+      bot: 'היי 😊 איזה כיף שפנית אלינו!\nאני הבוט של Even\'s — אשמח לעזור לך לתכנן אירוע מושלם אצלנו ✨\n\nנתחיל בכמה פרטים קצרים:',
+      isContactForm: true,
+      run: (v, n) => { state.name = v.name; state.phone = v.phone; state.email = v.email; n(); }
     },
-    // 1 → שלב 2: טלפון (חובה)
+    // 1 → שלב 2: סוג האירוע
     {
       step: 2,
-      bot: () => `נעים מאוד, ${fn()}! 🌿\n\nמה מספר הטלפון שלך?`,
-      isInput: true, ph: 'מספר טלפון',
-      run: (v, n) => { state.phone = v; n(); }
-    },
-    // 2 → שלב 3: מייל (חובה)
-    {
-      step: 3,
-      bot: () => `ומה כתובת המייל שלך?`,
-      isInput: true, ph: 'כתובת מייל',
-      run: (v, n) => { state.email = v; n(); }
-    },
-    // 3 → שלב 4: סוג האירוע
-    {
-      step: 4,
       bot: () => `תודה ${fn()}! 😊\n\nמה סוג האירוע שאת/ה מתכנן/ת?`,
       opts: ['אירוע עסקי', 'אירוע פרטי', 'אחר'],
       run: (c, n) => { state.eventCategory = c; n(); }
     },
     // 4 → שלב 5: שם חברה — רק לעסקי (שדה טקסט), אחרים עוברים הלאה
     {
-      step: 5,
+      step: 3,
       bot: () => {
         const cat = state.eventCategory || '';
         if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ✨\n\nמאיזה חברה / ארגון את/ה?`;
@@ -701,7 +728,7 @@
     },
     // 5 → שלב 6: סוג האירוע הספציפי
     {
-      step: 6,
+      step: 4,
       bot: () => {
         const cat = state.eventCategory || '';
         if (cat === 'אירוע עסקי') return `איזה סוג אירוע עסקי מדובר?`;
@@ -713,7 +740,7 @@
     },
     // 6 → שלב 7: כמות אורחים — שדה חופשי
     {
-      step: 7,
+      step: 5,
       bot: () => {
         const cat = state.eventCategory || '';
         const max = cat === 'אירוע פרטי' ? 150 : 100;
@@ -724,34 +751,34 @@
     },
     // 7 → שלב 8: תאריך
     {
-      step: 8,
+      step: 6,
       bot: () => `${fn()}, מצוין! 💫\n\nיש תאריך מועדף בראש?`,
       isDatePicker: true,
       run: (v, n) => { state.date = v; n(); }
     },
     // 8 → שלב 9: שעות — שונה לפרטי/עסקי
     {
-      step: 9,
+      step: 7,
       bot: () => `ומה שעות האירוע המשוערות?`,
       isOptsHours: true,
       run: (c, n) => { state.hours = c; n(); }
     },
     // 9 → שלב 10: הסכמה לדיוור
     {
-      step: 10,
+      step: 8,
       bot: () => `כמעט סיימנו! 😊\n\nאני מסכימ/ה לקבל עדכונים ומבצעים מ-Even\'s:`,
       opts: ['כן, אשמח לקבל עדכונים 💌', 'לא תודה'],
       run: (c, n) => { state.consent = c.includes('כן') ? 'כן' : 'לא'; submitLead(); n(); }
     },
     // 10 → שלב 11: תודה
     {
-      step: 11,
+      step: 9,
       bot: () => `תודה רבה, ${fn()}! 🌿💫\n\nקיבלנו את כל הפרטים שלך ואנחנו ממש שמחים שפנית אלינו!\nמיכל תחזור אליך בהקדם — בדרך כלל תוך יום עסקים אחד.\n\nמחכים לכם אצלנו ב-Even\'s 🏡✨`,
       isFinal: true
     },
     // 11 → שלב 12: סיכום + לינקים
     {
-      step: 12,
+      step: 10,
       bot: () => `בינתיים, מוזמנ/ת להציץ:\n\n🌿 <a href="https://www.evens.co.il/event-s" target="_blank">מתחם האירוח שלנו</a>\n🧑‍🍳 <a href="https://www.evens.co.il/copy-of-פרויקט-החממה" target="_blank">הסדנאות שלנו</a>\n📞 <a href="https://wa.me/972524763530" target="_blank">WhatsApp ישיר עם מיכל</a>`,
       isSummary: true
     }
@@ -786,6 +813,13 @@
         addMultiOpts(s.opts, c => {
           addUser(c);
           s.run(c, () => setTimeout(() => runStep(idx + 1), 350));
+        });
+        return;
+      }
+      if (s.isContactForm) {
+        addContactForm(v => {
+          addUser(`${v.name} | ${v.phone} | ${v.email}`);
+          s.run(v, () => setTimeout(() => runStep(idx + 1), 350));
         });
         return;
       }
