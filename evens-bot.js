@@ -538,9 +538,13 @@
     btn.onclick = sub;
     inp.onkeydown = e => { if (e.key === 'Enter') sub(); };
     r.appendChild(inp); r.appendChild(btn);
-    // Remove previous input-row if exists
-    const prev = MSG.querySelector('.ev-input-row:last-child');
-    MSG.appendChild(r);
+    // Insert before bottom bar if it exists
+    const bottomBar = win.querySelector('.ev-bottom-bar');
+    if (bottomBar) {
+      win.insertBefore(r, bottomBar);
+    } else {
+      MSG.appendChild(r);
+    }
     MSG.scrollTop = MSG.scrollHeight;
     setTimeout(() => inp.focus(), 100);
   }
@@ -636,7 +640,6 @@
     } else if (cat === 'אירוע פרטי') {
       opts = ['בר / בת מצווה', 'יום הולדת', 'חתונה / אירוסין', 'מסיבה / מפגש משפחתי', 'אחר'];
     } else {
-      // "אחר" - free text
       addInput('ספר/י לנו במה מדובר...', v => {
         addUser(v);
         onSel(v);
@@ -645,7 +648,14 @@
     }
     addOpts(opts, c => {
       addUser(c);
-      onSel(c);
+      if (c === 'אחר') {
+        addInput('ספר/י לנו איזה סוג אירוע...', v => {
+          addUser(v);
+          onSel(v);
+        });
+      } else {
+        onSel(c);
+      }
     });
   }
 
@@ -679,32 +689,28 @@
       opts: ['אירוע עסקי', 'אירוע פרטי', 'אחר'],
       run: (c, n) => { state.eventCategory = c; n(); }
     },
-    // 4 → שלב 5: שם חברה (רק לעסקי) + פירוט סוג
+    // 4 → שלב 5: שם חברה — רק לעסקי (שדה טקסט), אחרים עוברים הלאה
     {
       step: 5,
       bot: () => {
         const cat = state.eventCategory || '';
-        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ואירועים עסקיים ✨\n\nמאיזה חברה / ארגון את/ה?`;
-        if (cat === 'אירוע פרטי') return `כמה מרגש! 🎉 אנחנו אוהבים לארח אירועים פרטיים באווירה חמה ואינטימית.\n\nמה האירוע הספציפי?`;
-        return `בשמחה! 🌿\n\nספר/י לנו במה מדובר — נשמח להתאים לך את החוויה המושלמת ✨`;
+        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ✨\n\nמאיזה חברה / ארגון את/ה?`;
+        return null; // skip for non-business
       },
-      isOptsConditional: true,
-      run: (c, n) => {
-        const cat = state.eventCategory || '';
-        if (cat === 'אירוע עסקי') { state.company = c; }
-        else { state.eventType = c; }
-        n();
-      }
+      isSkippable: true,
+      isInput: true, ph: 'שם חברה / ארגון',
+      run: (v, n) => { state.company = v; n(); }
     },
-    // 5 → שלב 6: פירוט סוג אירוע עסקי (רק לעסקי)
+    // 5 → שלב 6: סוג האירוע הספציפי
     {
       step: 6,
       bot: () => {
         const cat = state.eventCategory || '';
-        if (cat === 'אירוע עסקי') return `ואיזה סוג אירוע עסקי מדובר?`;
-        return null; // skip
+        if (cat === 'אירוע עסקי') return `איזה סוג אירוע עסקי מדובר?`;
+        if (cat === 'אירוע פרטי') return `כמה מרגש! 🎉 אנחנו אוהבים לארח אירועים פרטיים באווירה חמה ואינטימית.\n\nמה האירוע הספציפי?`;
+        return `בשמחה! 🌿\n\nספר/י לנו במה מדובר — נשמח להתאים לך את החוויה המושלמת ✨`;
       },
-      isOptsConditionalBiz: true,
+      isOptsConditional: true,
       run: (c, n) => { state.eventType = c; n(); }
     },
     // 6 → שלב 7: כמות אורחים — שדה חופשי
@@ -758,6 +764,11 @@
     const s = FLOW[idx];
     updProg(s.step);
     const text = typeof s.bot === 'function' ? s.bot() : s.bot;
+    // Skip step if bot returns null (condition not met)
+    if (text === null) {
+      setTimeout(() => runStep(idx + 1), 50);
+      return;
+    }
     addBot(text, 120).then(() => {
       if (s.isSummary) {
         addSum();
