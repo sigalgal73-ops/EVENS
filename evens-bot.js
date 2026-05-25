@@ -521,12 +521,12 @@
     MSG.scrollTop = MSG.scrollHeight;
   }
 
-  function addInput(ph, onSub, type) {
+  function addInput(ph, onSub, type, inputType) {
     const r = document.createElement('div');
     r.className = 'ev-input-row';
     const inp = document.createElement('input');
     inp.className = 'ev-input'; inp.placeholder = ph;
-    inp.type = type || 'text';
+    inp.type = inputType || type || 'text';
     const btn = document.createElement('button');
     btn.className = 'ev-send'; btn.textContent = 'שלח';
     function sub() {
@@ -549,15 +549,15 @@
     const s = state;
     const rows = [
       ['שם', s.name || '—'],
-      ['חברה', s.company || '—'],
       ['טלפון', s.phone || '—'],
       ['מייל', s.email || '—'],
+      ['חברה', s.company || '—'],
       ['סוג אירוע', s.eventCategory || '—'],
       ['פירוט', s.eventType || '—'],
       ['תאריך', s.date || '—'],
       ['שעות', s.hours || '—'],
       ['כמות אורחים', s.size || '—'],
-      ['סוג אירוח', s.catering || '—'],
+      ['דיוור', s.consent || '—'],
     ];
     const c = document.createElement('div');
     c.className = 'ev-sum';
@@ -654,87 +654,95 @@
     // 0 → שלב 1: פתיחה + שם
     {
       step: 1,
-      bot: 'היי 😊 איזה כיף שפנית אלינו!\nאני הבוט של Even\'s — אשמח לעזור לך לתכנן אירוע מושלם אצלנו ✨\n\nנתחיל בהיכרות — מה שמך?',
+      bot: 'היי 😊 איזה כיף שפנית אלינו!\nאני הבוט של Even\'s — אשמח לעזור לך לתכנן אירוע מושלם אצלנו ✨\n\nנתחיל בהיכרות קצרה — מה שמך?',
       isInput: true, ph: 'שם פרטי + שם משפחה',
       run: (v, n) => { state.name = v; n(); }
     },
-    // 1 → שלב 2: שם חברה
+    // 1 → שלב 2: טלפון (חובה)
     {
       step: 2,
-      bot: () => `נעים מאוד, ${fn()}! 🌿\n\nמאיזה חברה / ארגון את/ה? (אם פרטי — אפשר לכתוב "פרטי")`,
-      isInput: true, ph: 'שם חברה / ארגון',
-      run: (v, n) => { state.company = v; n(); }
+      bot: () => `נעים מאוד, ${fn()}! 🌿\n\nמה מספר הטלפון שלך?`,
+      isInput: true, ph: 'מספר טלפון',
+      run: (v, n) => { state.phone = v; n(); }
     },
-    // 2 → שלב 3: סוג האירוע — עסקי / פרטי / אחר
+    // 2 → שלב 3: מייל (חובה)
     {
       step: 3,
-      bot: () => `מעולה! 😊\n\nמה סוג האירוע שאת/ה מתכנן/ת?`,
+      bot: () => `ומה כתובת המייל שלך?`,
+      isInput: true, ph: 'כתובת מייל',
+      run: (v, n) => { state.email = v; n(); }
+    },
+    // 3 → שלב 4: סוג האירוע
+    {
+      step: 4,
+      bot: () => `תודה ${fn()}! 😊\n\nמה סוג האירוע שאת/ה מתכנן/ת?`,
       opts: ['אירוע עסקי', 'אירוע פרטי', 'אחר'],
       run: (c, n) => { state.eventCategory = c; n(); }
     },
-    // 3 → שלב 4א: פירוט עסקי
+    // 4 → שלב 5: שם חברה (רק לעסקי) + פירוט סוג
     {
-      step: 4,
+      step: 5,
       bot: () => {
         const cat = state.eventCategory || '';
-        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ואירועים עסקיים ✨\n\nאיזה סוג אירוע עסקי מדובר?`;
+        if (cat === 'אירוע עסקי') return `נהדר! יש לנו מתחם מצויד ושקט, מוקף טבע — מושלם לפגישות ממוקדות ואירועים עסקיים ✨\n\nמאיזה חברה / ארגון את/ה?`;
         if (cat === 'אירוע פרטי') return `כמה מרגש! 🎉 אנחנו אוהבים לארח אירועים פרטיים באווירה חמה ואינטימית.\n\nמה האירוע הספציפי?`;
         return `בשמחה! 🌿\n\nספר/י לנו במה מדובר — נשמח להתאים לך את החוויה המושלמת ✨`;
       },
       isOptsConditional: true,
-      run: (c, n) => { state.eventType = c; n(); }
+      run: (c, n) => {
+        const cat = state.eventCategory || '';
+        if (cat === 'אירוע עסקי') { state.company = c; }
+        else { state.eventType = c; }
+        n();
+      }
     },
-    // 4 → שלב 5: כמות אורחים
-    {
-      step: 5,
-      bot: () => `מעולה! 💫\n\nלכמה אורחים בערך?`,
-      opts: ['עד 20', '20–50', '50–80', '80–120'],
-      run: (c, n) => { state.size = c; n(); }
-    },
-    // 5 → שלב 6: תאריך עם date picker
+    // 5 → שלב 6: פירוט סוג אירוע עסקי (רק לעסקי)
     {
       step: 6,
+      bot: () => {
+        const cat = state.eventCategory || '';
+        if (cat === 'אירוע עסקי') return `ואיזה סוג אירוע עסקי מדובר?`;
+        return null; // skip
+      },
+      isOptsConditionalBiz: true,
+      run: (c, n) => { state.eventType = c; n(); }
+    },
+    // 6 → שלב 7: כמות אורחים — שדה חופשי
+    {
+      step: 7,
+      bot: () => {
+        const cat = state.eventCategory || '';
+        const max = cat === 'אירוע פרטי' ? 150 : 100;
+        return `מעולה! 💫\n\nלכמה אורחים בערך? (עד ${max} אנשים)`;
+      },
+      isInput: true, ph: 'הכנס מספר אורחים', inputType: 'number',
+      run: (v, n) => { state.size = v; n(); }
+    },
+    // 7 → שלב 8: תאריך
+    {
+      step: 8,
       bot: () => `${fn()}, מצוין! 💫\n\nיש תאריך מועדף בראש?`,
       isDatePicker: true,
       run: (v, n) => { state.date = v; n(); }
     },
-    // 6 → שלב 7: שעות האירוע
-    {
-      step: 7,
-      bot: () => `ומה שעות האירוע המשוערות?`,
-      opts: ['בוקר (08:00–13:00)', 'צהריים (12:00–16:00)', 'אחר הצהריים / ערב (17:00+)', 'יום שלם / גמיש'],
-      run: (c, n) => { state.hours = c; n(); }
-    },
-    // 7 → שלב 8: סוג האירוח
-    {
-      step: 8,
-      bot: () => `ומה לגבי האוכל? 🍽️\nניתן לבחור יותר מאפשרות אחת:`,
-      isMulti: true,
-      opts: ['ארוחת בוקר', 'ארוחת צהריים', 'ארוחת ערב', 'כיבוד קל / קפה ועוגות', 'חלבי', 'בשרי', 'ללא אוכל'],
-      run: (c, n) => { state.catering = c; n(); }
-    },
-    // 8 → שלב 9: טלפון
+    // 8 → שלב 9: שעות — שונה לפרטי/עסקי
     {
       step: 9,
-      bot: () => `${fn()}, כמעט סיימנו! 😊\n\nכדי שנחזור אליך עם הצעה מפורטת —\nמה מספר הטלפון שלך?`,
-      isInput: true, ph: 'מספר טלפון',
-      run: (v, n) => { state.phone = v; n(); }
+      bot: () => `ומה שעות האירוע המשוערות?`,
+      isOptsHours: true,
+      run: (c, n) => { state.hours = c; n(); }
     },
-    // 9 → שלב 10: מייל
+    // 9 → שלב 10: הסכמה לדיוור
     {
       step: 10,
-      bot: () => `ומייל? (לא חובה — אפשר לדלג עם "-")`,
-      isInput: true, ph: 'כתובת מייל',
-      run: (v, n) => {
-        state.email = (v === '-' || v === '') ? '' : v;
-        submitLead();
-        n();
-      }
+      bot: () => `כמעט סיימנו! 😊\n\nאני מסכימ/ה לקבל עדכונים ומבצעים מ-Even\'s:`,
+      opts: ['כן, אשמח לקבל עדכונים 💌', 'לא תודה'],
+      run: (c, n) => { state.consent = c.includes('כן') ? 'כן' : 'לא'; submitLead(); n(); }
     },
     // 10 → שלב 11: תודה
     {
       step: 11,
-      bot: () => `תודה רבה, ${fn()}! 🌿💫\n\nקיבלנו את כל הפרטים שלך ואנחנו ממש שמחים שפנית אלינו!\nמיכל או אביב יחזרו אליך בהקדם — בדרך כלל תוך יום עסקים אחד.\n\nמחכים לכם אצלנו ב-Even&#39;s 🏡✨`,
+      bot: () => `תודה רבה, ${fn()}! 🌿💫\n\nקיבלנו את כל הפרטים שלך ואנחנו ממש שמחים שפנית אלינו!\nמיכל תחזור אליך בהקדם — בדרך כלל תוך יום עסקים אחד.\n\nמחכים לכם אצלנו ב-Even\'s 🏡✨`,
       isFinal: true
     },
     // 11 → שלב 12: סיכום + לינקים
@@ -785,11 +793,37 @@
         });
         return;
       }
+      if (s.isOptsConditionalBiz) {
+        // Only show for עסקי, skip otherwise
+        if ((state.eventCategory || '') !== 'אירוע עסקי') {
+          s.run('', () => setTimeout(() => runStep(idx + 1), 50));
+          return;
+        }
+        addOpts(['כנס / הרצאה', 'ישיבת הנהלה / מפגש מנהלים', 'יום גיבוש', 'סדנה מקצועית', 'אחר'], c => {
+          addUser(c);
+          s.run(c, () => setTimeout(() => runStep(idx + 1), 350));
+        });
+        return;
+      }
+      if (s.isOptsHours) {
+        const cat = state.eventCategory || '';
+        let hoursOpts;
+        if (cat === 'אירוע עסקי') {
+          hoursOpts = ['חצי יום בוקר', 'חצי יום צהריים', 'יום שלם', 'ערב'];
+        } else {
+          hoursOpts = ['בוקר', 'צהריים', 'ערב'];
+        }
+        addOpts(hoursOpts, c => {
+          addUser(c);
+          s.run(c, () => setTimeout(() => runStep(idx + 1), 350));
+        });
+        return;
+      }
       if (s.isInput) {
         addInput(s.ph, v => {
           addUser(v);
           s.run(v, () => setTimeout(() => runStep(idx + 1), 350));
-        });
+        }, 'text', s.inputType || 'text');
         return;
       }
       if (s.opts) {
