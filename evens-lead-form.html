@@ -348,7 +348,7 @@
     btn.textContent = 'שולח...';
 
     const SUPABASE_URL = 'https://fzkozgycsteoftvhqujj.supabase.co';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; // להחליף!
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8'; // להחליף!
 
     const dateVal = document.getElementById('event-date').value;
     const payload = {
@@ -368,7 +368,7 @@
 
     try {
       // שליחה ל-Supabase
-      const res = await fetch(SUPABASE_URL + '/rest/v1/leads', {
+      await fetch('https://fzkozgycsteoftvhqujj.supabase.co/rest/v1/leads', {
         method: 'POST',
         headers: {
           'Content-Type':  'application/json',
@@ -379,7 +379,7 @@
         body: JSON.stringify(payload)
       });
 
-      // שליחה ל-Netlify Forms (לשליחת מייל למיכל)
+      // שליחה ל-Netlify Forms
       const netlifyBody = new URLSearchParams({
         'form-name':     'evens-lead-form',
         'name':          payload.name,
@@ -394,7 +394,7 @@
         'notes':         payload.notes,
         'consent':       payload.consent,
       });
-      await fetch('/', {
+      const res = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: netlifyBody.toString()
