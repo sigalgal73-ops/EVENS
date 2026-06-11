@@ -37,7 +37,7 @@
     .submit-btn:hover{background:#3d5c2e;transform:translateY(-1px);}
     .submit-btn:disabled{background:#a0b898;cursor:default;transform:none;}
     .success-screen{display:none;flex-direction:column;align-items:center;
-      justify-content:center;text-align:center;min-height:500px;
+      justify-content:center;text-align:center;min-height:400px;
       padding:60px 24px;background:#fdf8f2;}
     .success-icon{font-size:64px;margin-bottom:20px;}
     .success-screen h2{font-size:26px;font-weight:700;color:#3d5c2e;margin-bottom:12px;}
@@ -210,7 +210,13 @@
       const nb=new URLSearchParams(Object.assign({'form-name':'evens-lead-form'},p));
       await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:nb.toString()});
       document.getElementById('form-area').style.display='none';
-      document.getElementById('success-screen').style.display='flex';
+      const ss = document.getElementById('success-screen');
+      ss.style.display='flex';
+      // Shrink page to success screen height only
+      document.body.style.minHeight = '0';
+      document.querySelector('.col-form').style.minHeight = '0';
+      // Notify parent iframe to resize
+      try { window.parent.postMessage({height: ss.offsetHeight + 40}, '*'); } catch(e){}
     }catch(e){
       btn.disabled=false;btn.textContent='שלח/י פרטים ←';
       alert('אירעה שגיאה, אנא נסה/י שוב');
