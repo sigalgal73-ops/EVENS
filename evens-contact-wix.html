@@ -49,7 +49,7 @@
     @media(max-width:600px){{.row-2{{grid-template-columns:1fr;}}}}
     body{background:transparent;}
     .layout{display:flex;min-height:auto;}
-    .col-form{flex:1;padding:28px 28px 32px;background:#fdf8f2;display:flex;flex-direction:column;}
+    .col-form{flex:1;padding:28px 28px 32px;background:#fdf8f2;display:flex;flex-direction:column;min-height:auto;}
     .form-title{font-size:22px;font-weight:700;color:#3d5c2e;margin-bottom:4px;}
     .form-sub{font-size:13px;color:#7a6a5a;margin-bottom:20px;line-height:1.6;}
     @media(max-width:700px){.col-img{display:none;}.col-form{padding:20px 16px 20px;}}
@@ -208,7 +208,12 @@
         body:JSON.stringify(p)
       });
       const nb=new URLSearchParams(Object.assign({'form-name':'evens-lead-form'},p));
-      await fetch('https://evens1.netlify.app/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:nb.toString()});
+      await fetch('https://evens1.netlify.app/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: nb.toString(),
+        mode: 'no-cors'
+      }).catch(()=>{});
       document.getElementById('form-area').style.display='none';
       const ss = document.getElementById('success-screen');
       ss.style.display='flex';
