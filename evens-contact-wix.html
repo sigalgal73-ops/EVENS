@@ -208,7 +208,7 @@
         body:JSON.stringify(p)
       });
       const nb=new URLSearchParams(Object.assign({'form-name':'evens-lead-form'},p));
-      await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:nb.toString()});
+      await fetch('https://evens1.netlify.app/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:nb.toString()});
       document.getElementById('form-area').style.display='none';
       const ss = document.getElementById('success-screen');
       ss.style.display='flex';
