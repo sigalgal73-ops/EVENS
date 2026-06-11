@@ -208,6 +208,21 @@
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(p)
       });
+      // Fill and submit real Netlify form
+      document.getElementById('nf-name').value = p.name || '';
+      document.getElementById('nf-phone').value = p.phone || '';
+      document.getElementById('nf-email').value = p.email || '';
+      document.getElementById('nf-company').value = p.company || '';
+      document.getElementById('nf-category').value = p.event_category || '';
+      document.getElementById('nf-type').value = p.event_type || '';
+      document.getElementById('nf-date').value = p.event_date || '';
+      document.getElementById('nf-hours').value = p.event_hours || '';
+      document.getElementById('nf-guests').value = p.guest_count || '';
+      document.getElementById('nf-notes').value = p.notes || '';
+      document.getElementById('nf-consent').value = p.consent || '';
+      document.getElementById('nf-source').value = src || 'lead-form-wix';
+      document.getElementById('nf-submit').click();
+
       document.getElementById('form-area').style.display='none';
       const ss = document.getElementById('success-screen');
       ss.style.display='flex';
@@ -220,6 +235,22 @@
     }
   }
   document.getElementById('submit-btn').onclick = () => submitForm('lead-form-wix');
+</script>
+
+<script>
+  // שידור גובה לWix לגובה דינמי
+  function sendHeight() {
+    const h = document.body.scrollHeight;
+    window.parent.postMessage({type: 'setHeight', height: h}, '*');
+    // Wix specific
+    window.parent.postMessage(JSON.stringify({type: 'setHeight', height: h}), '*');
+  }
+
+  // שלח גובה בכל שינוי
+  const ro = new ResizeObserver(() => sendHeight());
+  ro.observe(document.body);
+  window.addEventListener('load', sendHeight);
+  sendHeight();
 </script>
 </body>
 </html>
