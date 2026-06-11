@@ -202,25 +202,17 @@
       consent:document.getElementById('consent').checked?'כן':'לא',
     };
     try{
-      await fetch('https://fzkozgycsteoftvhqujj.supabase.co/rest/v1/leads',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8','Prefer':'return=minimal'},
-        body:JSON.stringify(p)
-      });
-      const nb=new URLSearchParams(Object.assign({'form-name':'evens-lead-form'},p));
-      await fetch('https://evens1.netlify.app/', {
+      // שליחה ל-Netlify Function (פותר CORS)
+      const res = await fetch('https://evens1.netlify.app/.netlify/functions/submit-lead', {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: nb.toString(),
-        mode: 'no-cors'
-      }).catch(()=>{});
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(p)
+      });
       document.getElementById('form-area').style.display='none';
       const ss = document.getElementById('success-screen');
       ss.style.display='flex';
-      // Shrink page to success screen height only
       document.body.style.minHeight = '0';
       document.querySelector('.col-form').style.minHeight = '0';
-      // Notify parent iframe to resize
       try { window.parent.postMessage({height: ss.offsetHeight + 40}, '*'); } catch(e){}
     }catch(e){
       btn.disabled=false;btn.textContent='שלח/י פרטים ←';
