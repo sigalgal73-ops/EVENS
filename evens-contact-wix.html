@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Even's – צרו קשר</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Heebo',Arial,sans-serif;direction:rtl;color:#2d2d2d;}
+    .row-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .section-title{font-size:11px;font-weight:700;color:#5a7c4a;letter-spacing:.1em;
+      margin:18px 0 10px;padding-bottom:5px;border-bottom:1.5px solid rgba(90,124,74,.2);}
+    .field{margin-bottom:11px;}
+    .field label{display:block;font-size:12px;font-weight:600;color:#3d5c2e;margin-bottom:4px;}
+    .field label .req{color:#c0392b;}
+    .field input,.field select,.field textarea{
+      width:100%;padding:11px 13px;font-size:14px;font-family:'Heebo',Arial,sans-serif;
+      background:#fff;border:1.5px solid rgba(90,124,74,.22);border-radius:9px;
+      color:#2d2d2d;outline:none;transition:border-color .18s,box-shadow .18s;direction:rtl;}
+    .field input:focus,.field select:focus,.field textarea:focus{
+      border-color:#5a7c4a;box-shadow:0 0 0 3px rgba(90,124,74,.1);}
+    .field textarea{min-height:70px;resize:vertical;}
+    .field input[type=number]{-moz-appearance:textfield;}
+    .field input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+    .field.invalid input,.field.invalid select{border-color:#c0392b;}
+    .error-msg{font-size:11px;color:#c0392b;margin-top:4px;display:none;}
+    .field.invalid .error-msg{display:block;}
+    .consent-wrap{display:flex;align-items:flex-start;gap:10px;background:#fff;
+      border:1.5px solid rgba(90,124,74,.2);border-radius:9px;padding:12px;cursor:pointer;}
+    .consent-wrap input[type=checkbox]{width:17px;height:17px;accent-color:#5a7c4a;flex-shrink:0;margin-top:2px;}
+    .consent-wrap span{font-size:13px;color:#2d2d2d;line-height:1.5;}
+    .submit-btn{width:100%;padding:14px;margin-top:18px;background:#5a7c4a;color:#fff;
+      border:none;border-radius:10px;font-size:15px;font-weight:700;
+      font-family:'Heebo',Arial,sans-serif;cursor:pointer;transition:background .18s,transform .12s;}
+    .submit-btn:hover{background:#3d5c2e;transform:translateY(-1px);}
+    .submit-btn:disabled{background:#a0b898;cursor:default;transform:none;}
+    .success-screen{display:none;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;min-height:400px;
+      padding:60px 24px;background:#fdf8f2;}
+    .success-icon{font-size:64px;margin-bottom:20px;}
+    .success-screen h2{font-size:26px;font-weight:700;color:#3d5c2e;margin-bottom:12px;}
+    .success-screen p{font-size:15px;color:#7a6a5a;line-height:1.8;margin-bottom:28px;}
+    .success-home{display:inline-block;padding:12px 28px;background:#5a7c4a;color:#fff;
+      border-radius:10px;text-decoration:none;font-size:14px;font-weight:700;
+      font-family:Heebo,Arial,sans-serif;transition:background .18s;}
+    .success-home:hover{background:#3d5c2e;}
+    @media(max-width:600px){{.row-2{{grid-template-columns:1fr;}}}}
+    body{background:transparent;}
+    .layout{display:flex;min-height:auto;}
+    .col-form{flex:1;padding:28px 28px 32px;background:#fdf8f2;display:flex;flex-direction:column;min-height:auto;}
+    .form-title{font-size:22px;font-weight:700;color:#3d5c2e;margin-bottom:4px;}
+    .form-sub{font-size:13px;color:#7a6a5a;margin-bottom:20px;line-height:1.6;}
+    @media(max-width:700px){.col-img{display:none;}.col-form{padding:20px 16px 20px;}}
+  </style>
+</head>
+<body>
+<form name="evens-lead-form" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="evens-lead-form"/>
+  <input type="text" name="name"/><input type="text" name="phone"/>
+  <input type="email" name="email"/><input type="text" name="company"/>
+  <input type="text" name="event_category"/><input type="text" name="event_type"/>
+  <input type="text" name="event_date"/><input type="text" name="event_hours"/>
+  <input type="number" name="guest_count"/><input type="text" name="notes"/>
+  <input type="text" name="consent"/>
+</form>
+<div class="layout">
+  </div>
+  <div class="col-form">
+    <div id="form-area">
+      <div class="form-title">צרו קשר</div>
+      <div class="form-sub">מלאו את הטופס ונחזור אליכם עם כל המידע לתכנון חוויה מושלמת</div>
+      
+      <div class="section-title">פרטים אישיים</div>
+      <div class="row-2">
+        <div class="field" id="field-name">
+          <label>שם מלא <span class="req">*</span></label>
+          <input type="text" id="name" placeholder="שם פרטי + שם משפחה"/>
+          <div class="error-msg">נא למלא שם מלא</div>
+        </div>
+        <div class="field" id="field-phone">
+          <label>טלפון <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="050-0000000"/>
+          <div class="error-msg">נא למלא טלפון</div>
+        </div>
+      </div>
+      <div class="field" id="field-email">
+        <label>מייל <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="example@gmail.com"/>
+        <div class="error-msg">נא למלא מייל תקין</div>
+      </div>
+
+      <div class="section-title">פרטי החוויה</div>
+      <div class="row-2">
+        <div class="field" id="field-category">
+          <label>סוג החוויה <span class="req">*</span></label>
+          <select id="event-category" onchange="toggleCompany()">
+            <option value="">— בחר/י —</option>
+            <option value="חוויה עסקית">חוויה עסקית</option>
+            <option value="חוויה פרטית">חוויה פרטית</option>
+            <option value="אחר">אחר</option>
+          </select>
+          <div class="error-msg">נא לבחור סוג</div>
+        </div>
+        <div class="field" id="company-field" style="display:none">
+          <label>שם חברה / ארגון</label>
+          <input type="text" id="company" placeholder="שם החברה"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>פירוט החוויה</label>
+        <input type="text" id="event-type" placeholder="לדוגמה: ישיבת הנהלה / בת מצווה / יום גיבוש"/>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>תאריך משוער</label>
+          <input type="date" id="event-date"/>
+        </div>
+        <div class="field">
+          <label>שעות החוויה</label>
+          <select id="event-hours">
+            <option value="">— בחר/י —</option>
+            <optgroup label="חוויה פרטית">
+              <option>בוקר</option><option>צהריים</option><option>ערב</option>
+            </optgroup>
+            <optgroup label="חוויה עסקית">
+              <option>חצי יום בוקר</option><option>חצי יום צהריים</option>
+              <option>יום שלם</option><option>ערב</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="field" id="field-guests">
+        <label>כמות אורחים <span class="req">*</span></label>
+        <input type="number" id="guest-count" placeholder="מספר אורחים" min="1" max="150"/>
+        <div class="error-msg">נא למלא כמות אורחים</div>
+      </div>
+      <div class="field">
+        <label>הערות / בקשות מיוחדות</label>
+        <textarea id="notes" placeholder="כל מידע נוסף שיעזור לנו..."></textarea>
+      </div>
+      <div class="section-title">הסכמות</div>
+      <label class="consent-wrap">
+        <input type="checkbox" id="consent"/>
+        <span>אני מסכימ/ה לקבל עדכונים ומבצעים מ-Even's 💌</span>
+      </label>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">שלח/י פרטים ←</button>
+      </div>
+    </div>
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">🌿</div>
+      <h2>תודה רבה!</h2>
+      <p>קיבלנו את הפרטים שלך ונחזור אליך בהקדם.<br/>מחכים לארח אותך ב-Even's ✨</p>
+      <a class="success-home" href="https://www.evens.co.il/">חזרה לאתר →</a>
+    </div>
+  </div>
+</div>
+<script>
+
+  document.getElementById('event-date').min = new Date().toISOString().split('T')[0];
+  function toggleCompany() {
+    document.getElementById('company-field').style.display =
+      document.getElementById('event-category').value === 'חוויה עסקית' ? 'block' : 'none';
+  }
+  function validate() {
+    let ok = true;
+    [
+      {id:'field-name',    v:()=>document.getElementById('name').value.trim()},
+      {id:'field-phone',   v:()=>document.getElementById('phone').value.trim()},
+      {id:'field-email',   v:()=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(document.getElementById('email').value.trim())},
+      {id:'field-category',v:()=>document.getElementById('event-category').value},
+      {id:'field-guests',  v:()=>document.getElementById('guest-count').value},
+    ].forEach(c=>{
+      const f=document.getElementById(c.id);
+      if(!c.v()){f.classList.add('invalid');ok=false;}else f.classList.remove('invalid');
+    });
+    return ok;
+  }
+  function formatDate(d){
+    const [y,m,day]=d.split('-');
+    const mn=['','ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+    return parseInt(day)+' ב'+mn[parseInt(m)]+' '+y;
+  }
+  async function submitForm(src){
+    if(!validate())return;
+    const btn=document.getElementById('submit-btn');
+    btn.disabled=true;btn.textContent='שולח...';
+    const dv=document.getElementById('event-date').value;
+    const p={
+      source:src||'lead-form',
+      name:document.getElementById('name').value.trim(),
+      phone:document.getElementById('phone').value.trim(),
+      email:document.getElementById('email').value.trim(),
+      company:document.getElementById('company').value.trim(),
+      event_category:document.getElementById('event-category').value,
+      event_type:document.getElementById('event-type').value.trim(),
+      event_date:dv?formatDate(dv):'',
+      event_hours:document.getElementById('event-hours').value,
+      guest_count:document.getElementById('guest-count').value,
+      notes:document.getElementById('notes').value.trim(),
+      consent:document.getElementById('consent').checked?'כן':'לא',
+    };
+    try{
+      // שמירה ל-Supabase בלבד
+      const res = await fetch('https://fzkozgycsteoftvhqujj.supabase.co/rest/v1/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(p)
+      });
+      if (!res.ok) throw new Error('Supabase error: ' + res.status);
+      document.getElementById('form-area').style.display='none';
+      const ss = document.getElementById('success-screen');
+      ss.style.display='flex';
+      document.body.style.minHeight = '0';
+      document.querySelector('.col-form').style.minHeight = '0';
+      try { window.parent.postMessage({type:'setHeight', height: ss.offsetHeight + 40}, '*'); } catch(e){}
+    }catch(e){
+      btn.disabled=false;btn.textContent='שלח/י פרטים ←';
+      alert('אירעה שגיאה, אנא נסה/י שוב');
+    }
+  }
+  document.getElementById('submit-btn').onclick = () => submitForm('lead-form-wix');
+</script>
+
+<script>
+  // שידור גובה לWix לגובה דינמי
+  function sendHeight() {
+    const h = document.body.scrollHeight;
+    window.parent.postMessage({type: 'setHeight', height: h}, '*');
+    // Wix specific
+    window.parent.postMessage(JSON.stringify({type: 'setHeight', height: h}), '*');
+  }
+
+  // שלח גובה בכל שינוי
+  const ro = new ResizeObserver(() => sendHeight());
+  ro.observe(document.body);
+  window.addEventListener('load', sendHeight);
+  sendHeight();
+</script>
+</body>
+</html>
