@@ -1,92 +1,24 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Even's – תצוגה מקדימה של הצ'אטבוט</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Heebo', Arial, sans-serif;
-      background: #f5efe6;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      direction: rtl;
-    }
-    .page {
-      text-align: center;
-      padding: 40px 24px;
-    }
-    .logo {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-    .title {
-      font-size: 28px;
-      font-weight: 700;
-      color: #3d5c2e;
-      margin-bottom: 8px;
-    }
-    .sub {
-      font-size: 15px;
-      color: #7a6a5a;
-      margin-bottom: 32px;
-    }
-    .hint {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: #fff;
-      border: 1.5px solid rgba(90,124,74,0.3);
-      border-radius: 24px;
-      padding: 12px 24px;
-      font-size: 14px;
-      color: #3d5c2e;
-      font-weight: 600;
-      box-shadow: 0 2px 12px rgba(90,124,74,0.1);
-      animation: bounce 2s ease-in-out infinite;
-    }
-    @keyframes bounce {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-    .arrow {
-      font-size: 20px;
-    }
-  </style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Even's – תצוגה מקדימה</title>
 </head>
-<body>
-  <div class="page">
-    <div class="logo">🌿</div>
-    <div class="title">Even's – תצוגה מקדימה</div>
-    <div class="sub">לחץ על הכפתור הירוק בפינה השמאלית התחתונה כדי להפעיל את הצ'אטבוט</div>
-    <div class="hint">
-      <span class="arrow">↙️</span>
-      לחץ כאן למטה לשמאל
-    </div>
+<body style="font-family:Arial;background:#f5efe6;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;">
+  <div style="text-align:center;padding:40px;">
+    <div style="font-size:48px;">🌿</div>
+    <h1 style="color:#3d5c2e;">Even's – תצוגה מקדימה</h1>
+    <p style="color:#7a6a5a;">לחץ על הכפתור הירוק בפינה השמאלית התחתונה</p>
   </div>
-
-  <!-- טופס נסתר — Netlify מזהה בזמן build ושולח מייל -->
   <form name="evens-lead" netlify netlify-honeypot="bot-field" hidden>
-    <input type="hidden" name="form-name" value="evens-lead" />
-    <input type="text"   name="bot-field" />
-    <input type="text"   name="name" />
-    <input type="text"   name="company" />
-    <input type="text"   name="phone" />
-    <input type="email"  name="email" />
-    <input type="text"   name="eventCategory" />
-    <input type="text"   name="eventType" />
-    <input type="text"   name="date" />
-    <input type="text"   name="hours" />
-    <input type="text"   name="size" />
-    <input type="text"   name="catering" />
+    <input type="hidden" name="form-name" value="evens-lead"/>
+    <input type="text" name="name"/><input type="text" name="phone"/>
+    <input type="email" name="email"/><input type="text" name="company"/>
+    <input type="text" name="eventCategory"/><input type="text" name="eventType"/>
+    <input type="text" name="date"/><input type="text" name="hours"/>
+    <input type="text" name="size"/><input type="text" name="consent"/>
   </form>
-
   <script src="evens-bot.js"></script>
 </body>
 </html>
-
