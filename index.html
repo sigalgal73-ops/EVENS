@@ -3,22 +3,21 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Even's – תצוגה מקדימה</title>
+  <title>Even's</title>
 </head>
 <body style="font-family:Arial;background:#f5efe6;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;">
   <div style="text-align:center;padding:40px;">
     <div style="font-size:48px;">🌿</div>
-    <h1 style="color:#3d5c2e;">Even's – תצוגה מקדימה</h1>
-    <p style="color:#7a6a5a;">לחץ על הכפתור הירוק בפינה השמאלית התחתונה</p>
+    <h1 style="color:#3d5c2e;">Even's</h1>
   </div>
-  <form name="evens-lead" netlify netlify-honeypot="bot-field" hidden>
-    <input type="hidden" name="form-name" value="evens-lead"/>
+  <form name="evens-lead-form" netlify netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="evens-lead-form"/>
     <input type="text" name="name"/><input type="text" name="phone"/>
     <input type="email" name="email"/><input type="text" name="company"/>
-    <input type="text" name="eventCategory"/><input type="text" name="eventType"/>
-    <input type="text" name="date"/><input type="text" name="hours"/>
-    <input type="text" name="size"/><input type="text" name="consent"/>
+    <input type="text" name="event_category"/><input type="text" name="event_type"/>
+    <input type="text" name="event_date"/><input type="text" name="event_hours"/>
+    <input type="text" name="guest_count"/><input type="text" name="notes"/>
+    <input type="text" name="consent"/>
   </form>
-  <script src="evens-bot.js"></script>
 </body>
 </html>
