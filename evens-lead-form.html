@@ -243,8 +243,8 @@
     <label>סוג החוויה <span class="req">*</span></label>
     <select id="event-category" onchange="toggleCompany()">
       <option value="">— בחר/י —</option>
-      <option value="אירוע עסקי">אירוע עסקי</option>
-      <option value="אירוע פרטי">אירוע פרטי</option>
+      <option value="חוויה עסקית">חוויה עסקית</option>
+      <option value="חוויה פרטית">חוויה פרטית</option>
       <option value="אחר">אחר</option>
     </select>
     <div class="error-msg">נא לבחור סוג אירוע</div>
@@ -320,7 +320,7 @@
 
   function toggleCompany() {
     const cat = document.getElementById('event-category').value;
-    document.getElementById('company-field').style.display = cat === 'אירוע עסקי' ? 'block' : 'none';
+    document.getElementById('company-field').style.display = cat === 'חוויה עסקית' ? 'block' : 'none';
   }
 
   function validate() {
