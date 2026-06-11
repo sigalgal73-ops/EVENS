@@ -36,11 +36,16 @@
       font-family:'Heebo',Arial,sans-serif;cursor:pointer;transition:background .18s,transform .12s;}
     .submit-btn:hover{background:#3d5c2e;transform:translateY(-1px);}
     .submit-btn:disabled{background:#a0b898;cursor:default;transform:none;}
-    .success-screen{display:none;text-align:center;padding:48px 24px;
-      flex-direction:column;align-items:center;justify-content:center;}
-    .success-icon{font-size:52px;margin-bottom:14px;}
-    .success-screen h2{font-size:20px;color:#3d5c2e;margin-bottom:8px;}
-    .success-screen p{font-size:14px;color:#7a6a5a;line-height:1.7;}
+    .success-screen{display:none;flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;min-height:500px;
+      padding:60px 24px;background:#fdf8f2;}
+    .success-icon{font-size:64px;margin-bottom:20px;}
+    .success-screen h2{font-size:26px;font-weight:700;color:#3d5c2e;margin-bottom:12px;}
+    .success-screen p{font-size:15px;color:#7a6a5a;line-height:1.8;margin-bottom:28px;}
+    .success-home{display:inline-block;padding:12px 28px;background:#5a7c4a;color:#fff;
+      border-radius:10px;text-decoration:none;font-size:14px;font-weight:700;
+      font-family:Heebo,Arial,sans-serif;transition:background .18s;}
+    .success-home:hover{background:#3d5c2e;}
     @media(max-width:600px){{.row-2{{grid-template-columns:1fr;}}}}
     body{background:transparent;}
     .layout{display:flex;min-height:auto;}
@@ -147,6 +152,7 @@
       <div class="success-icon">🌿</div>
       <h2>תודה רבה!</h2>
       <p>קיבלנו את הפרטים שלך ונחזור אליך בהקדם.<br/>מחכים לארח אותך ב-Even's ✨</p>
+      <a class="success-home" href="https://www.evens.co.il/">חזרה לאתר →</a>
     </div>
   </div>
 </div>
