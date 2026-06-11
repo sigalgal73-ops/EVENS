@@ -24,8 +24,11 @@
     }
     .header img {
       height: 52px;
-      filter: brightness(0) invert(1);
+      filter: brightness(0) invert(1) !important;
       margin-bottom: 10px;
+    }
+    @media (prefers-color-scheme: dark) {
+      .header img { filter: brightness(0) invert(1) !important; }
     }
     .header-sub {
       color: rgba(255,255,255,0.75);
