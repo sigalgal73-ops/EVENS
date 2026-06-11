@@ -202,33 +202,24 @@
       consent:document.getElementById('consent').checked?'כן':'לא',
     };
     try{
-      // שליחה ל-Netlify Function (פותר CORS)
-      const res = await fetch('https://evens1.netlify.app/.netlify/functions/submit-lead', {
+      // שמירה ל-Supabase בלבד
+      const res = await fetch('https://fzkozgycsteoftvhqujj.supabase.co/rest/v1/leads', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8',
+          'Prefer': 'return=minimal'
+        },
         body: JSON.stringify(p)
       });
-      // Fill and submit real Netlify form
-      document.getElementById('nf-name').value = p.name || '';
-      document.getElementById('nf-phone').value = p.phone || '';
-      document.getElementById('nf-email').value = p.email || '';
-      document.getElementById('nf-company').value = p.company || '';
-      document.getElementById('nf-category').value = p.event_category || '';
-      document.getElementById('nf-type').value = p.event_type || '';
-      document.getElementById('nf-date').value = p.event_date || '';
-      document.getElementById('nf-hours').value = p.event_hours || '';
-      document.getElementById('nf-guests').value = p.guest_count || '';
-      document.getElementById('nf-notes').value = p.notes || '';
-      document.getElementById('nf-consent').value = p.consent || '';
-      document.getElementById('nf-source').value = src || 'lead-form-wix';
-      document.getElementById('nf-submit').click();
-
+      if (!res.ok) throw new Error('Supabase error: ' + res.status);
       document.getElementById('form-area').style.display='none';
       const ss = document.getElementById('success-screen');
       ss.style.display='flex';
       document.body.style.minHeight = '0';
       document.querySelector('.col-form').style.minHeight = '0';
-      try { window.parent.postMessage({height: ss.offsetHeight + 40}, '*'); } catch(e){}
+      try { window.parent.postMessage({type:'setHeight', height: ss.offsetHeight + 40}, '*'); } catch(e){}
     }catch(e){
       btn.disabled=false;btn.textContent='שלח/י פרטים ←';
       alert('אירעה שגיאה, אנא נסה/י שוב');
