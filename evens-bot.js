@@ -568,28 +568,41 @@
     MSG.appendChild(c); MSG.scrollTop = MSG.scrollHeight;
   }
 
+  // ── Supabase config ──
+  const SUPABASE_URL = 'https://fzkozgycsteoftvhqujj.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6a296Z3ljc3Rlb2Z0dmhxdWpqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NDQxODUsImV4cCI6MjA5NDEyMDE4NX0.moRw4VDFm2zBXBlCueJrre0FXryGy_CnCn8c_oM_lq8';
+
   function submitLead() {
     const s = state;
-    const body = new URLSearchParams({
-      'form-name': 'evens-lead',
-      'name':          s.name || '',
-      'company':       s.company || '',
-      'phone':         s.phone || '',
-      'email':         s.email || '',
-      'eventCategory': s.eventCategory || '',
-      'eventType':     s.eventType || '',
-      'date':          s.date || '',
-      'hours':         s.hours || '',
-      'size':          s.size || '',
-      'catering':      s.catering || '',
-    });
-    fetch('/', {
+    const payload = {
+      source:         'chatbot',
+      name:           s.name          || '',
+      phone:          s.phone         || '',
+      email:          s.email         || '',
+      company:        s.company       || '',
+      event_category: s.eventCategory || '',
+      event_type:     s.eventType     || '',
+      event_date:     s.date          || '',
+      event_hours:    s.hours         || '',
+      guest_count:    s.size          || '',
+      consent:        s.consent       || 'לא'
+    };
+
+    fetch(SUPABASE_URL + '/rest/v1/leads', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body.toString()
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer':        'return=minimal'
+      },
+      body: JSON.stringify(payload)
     })
-    .then(() => console.log('EVENS Lead sent ✅'))
-    .catch(err => console.error('Netlify form error:', err));
+    .then(res => {
+      if (res.ok) console.log('EVENS Lead → Supabase ✅');
+      else res.text().then(t => console.error('Supabase error:', t));
+    })
+    .catch(err => console.error('Supabase fetch error:', err));
   }
 
   function addDatePicker(onSub) {
